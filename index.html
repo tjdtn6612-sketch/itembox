@@ -669,7 +669,7 @@ let tx=null;const gal=document.getElementById('gallery');gal.addEventListener('t
 
 /* member / admin mode */
 const ADMIN_HASH_DEFAULT='3b9838ba8c774a5a555784f2c2fc8fc8d0f723f43c61379352960990fd0b161c';
-const VIEWER_HASH='cf103071baa110fcaefc5a43869fd35c26c4e87e1af88c818881b731c2b6ce5f';
+const VIEWER_HASH='46b8951ec59395d206a4e3514bd2012f7bae26d5b8f1e3c823cc4904291ee9d6';
 function adminHash(){try{return localStorage.getItem('ib_admin_hash')||ADMIN_HASH_DEFAULT}catch(e){return ADMIN_HASH_DEFAULT}}
 async function changePw(){const cur=document.getElementById('pw-cur').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value;
  if(!cur||!n1){toast('현재 비밀번호와 새 비밀번호를 입력하세요');return}
@@ -680,7 +680,7 @@ async function changePw(){const cur=document.getElementById('pw-cur').value,n1=d
  document.getElementById('pw-cur').value=document.getElementById('pw-new').value=document.getElementById('pw-new2').value='';
  document.getElementById('pw-code').textContent=h;document.getElementById('pw-done').hidden=false;toast('비밀번호를 변경했습니다')}
 let isAdmin=false;
-function setMember(on,admin){isAdmin=!!admin;document.body.classList.toggle('member',on);document.querySelectorAll('.guest').forEach(el=>el.hidden=on);document.querySelectorAll('.mem').forEach(el=>el.hidden=!on);document.querySelectorAll('.memchip').forEach(c=>{const t=c.childNodes[c.childNodes.length-1];if(t&&t.nodeType===3)t.textContent=admin?'관리자':'정회원'});document.querySelectorAll('.adm').forEach(el=>el.hidden=!admin);const mt=document.getElementById('my-title');if(mt)mt.textContent=admin?'아이템박스 관리자':'소매점 회원 (보기용)';const mi=document.getElementById('my-id');if(mi)mi.textContent=admin?'itembox_admin':'itembox_guest';
+function setMember(on,admin){isAdmin=!!admin;document.body.classList.toggle('member',on);document.querySelectorAll('.guest').forEach(el=>el.hidden=on);document.querySelectorAll('.mem').forEach(el=>el.hidden=!on);document.querySelectorAll('.memchip').forEach(c=>{const t=c.childNodes[c.childNodes.length-1];if(t&&t.nodeType===3)t.textContent=admin?'관리자':'정회원'});document.querySelectorAll('.adm').forEach(el=>el.hidden=!admin);const mt=document.getElementById('my-title');if(mt)mt.textContent=admin?'아이템박스 관리자':'소매점 회원 (보기용)';const mi=document.getElementById('my-id');if(mi)mi.textContent=admin?'itembox_admin':'abcd1';
  // re-render product grids so price rows reflect the mode
  if(typeof goCat==='function'&&typeof pick==='function'){document.getElementById('home-grid').innerHTML=[P[0],P[2],...pick('뷰티',1),P[12]].map(p=>card(p)).join('');goCat(curCat,curSub,true)}
  try{if(on)sessionStorage.setItem('ib_auth',admin?'admin':'member');else sessionStorage.removeItem('ib_auth')}catch(e){}}
