@@ -492,7 +492,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
 <!-- VERIFY -->
 <section class="view" id="v-verify">
  <div class="gut mem" style="display:flex;flex-direction:column;gap:18px;padding-top:22px">
-  <div><span class="lbl">My page</span><h1 class="h2" style="font-size:28px;margin-top:8px">[상호명] 님</h1><div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><span class="memchip"><i></i>정회원 승인</span><span class="chip sm">소매점 (매장)</span><span class="chip sm">판매처 등록 완료</span></div></div>
+  <div><span class="lbl">My page</span><h1 class="h2" style="font-size:28px;margin-top:8px">아이템박스 관리자</h1><div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><span class="memchip"><i></i>정회원 승인</span><span class="chip sm">소매점 (매장)</span><span class="chip sm">판매처 등록 완료</span></div></div>
   <div class="memcard">
    <div class="row"><span>아이디</span><b>[itembox_user]</b></div>
    <div class="row"><span>승인일</span><b>[2026-00-00]</b></div>
@@ -512,12 +512,12 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
    <button class="doc" type="button" style="text-align:left;width:100%" onclick="toast('실제 사이트에서 연결됩니다')"><i>04</i><div><b>샘플 요청</b><br>카카오톡·톡톡으로 품번과 사이즈를 보내주세요</div></button>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-kakao" type="button" onclick="toast('카카오톡 채널 링크를 넣어주세요')">카카오톡</button><button class="btn btn-talk" type="button" onclick="toast('네이버 톡톡 링크를 넣어주세요')">톡톡</button></div>
-  <button class="btn btn-ghost" type="button" onclick="setMember(false);toast('로그아웃했습니다')">로그아웃</button>
+  <button class="btn btn-ghost" type="button" onclick="setMember(false);go('home');toast('로그아웃했습니다')">로그아웃</button>
   <footer><div class="logo" style="font-size:16px">ITEM<em>BOX</em></div><div>상호 아이템박스 · 사업자등록번호 [000-00-00000] · 고객센터 [000-0000-0000]<br>© 2026 아이템박스</div></footer>
  </div>
  <div class="gut guest" style="display:flex;flex-direction:column;gap:20px;padding-top:22px">
   <div><span class="lbl" style="color:var(--accent)">Must read</span><h1 class="h2" style="font-size:26px;margin-top:8px">회원가입 이후 사업자·셀러 인증 후 이용이 가능합니다</h1><p class="p" style="margin-top:10px">아이템박스는 제조사·도매·소매·셀러를 위한 <strong style="color:var(--ink)">폐쇄몰</strong>입니다. 회원가입 후 관리자 승인을 받아 정회원이 되면 판매가와 재고가 공개됩니다.</p></div>
-  <form class="form" onsubmit="event.preventDefault();toast('로그인은 정식 오픈 후 이용 가능합니다')">
+  <form class="form" onsubmit="event.preventDefault();doLogin()">
    <h3>로그인</h3>
    <div class="field"><label for="lid">ID</label><input id="lid" class="input" type="text" placeholder="아이디" autocomplete="username"></div>
    <div class="field"><label for="lpw">Password</label><input id="lpw" class="input" type="password" placeholder="비밀번호" autocomplete="current-password"></div>
@@ -658,10 +658,19 @@ let tx=null;const gal=document.getElementById('gallery');gal.addEventListener('t
 /* tabs, sorts, chips */
 ['sorts','dtabs'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')return;[...e.currentTarget.children].forEach(b=>b.classList.remove('on'));e.target.classList.add('on')}));
 
-/* member mode (demo) */
-function setMember(on){document.body.classList.toggle('member',on);document.querySelectorAll('.guest').forEach(el=>el.hidden=on);document.querySelectorAll('.mem').forEach(el=>el.hidden=!on);try{localStorage.setItem('ib_member',on?'1':'0')}catch(e){}}
-try{localStorage.removeItem('ib_member')}catch(e){}
-setMember(false);
+/* member / admin mode */
+const ADMIN_HASH='3b9838ba8c774a5a555784f2c2fc8fc8d0f723f43c61379352960990fd0b161c';
+let isAdmin=false;
+function setMember(on,admin){isAdmin=!!admin;document.body.classList.toggle('member',on);document.querySelectorAll('.guest').forEach(el=>el.hidden=on);document.querySelectorAll('.mem').forEach(el=>el.hidden=!on);document.querySelectorAll('.memchip').forEach(c=>{const t=c.childNodes[c.childNodes.length-1];if(t&&t.nodeType===3)t.textContent=admin?'관리자':'정회원'});
+ // re-render product grids so price rows reflect the mode
+ if(typeof goCat==='function'&&typeof pick==='function'){document.getElementById('home-grid').innerHTML=[P[0],P[2],...pick('뷰티',1),P[12]].map(p=>card(p)).join('');goCat(curCat,curSub,true)}
+ try{if(on)sessionStorage.setItem('ib_auth',admin?'admin':'member');else sessionStorage.removeItem('ib_auth')}catch(e){}}
+function sha256js(ascii){function R(v,a){return(v>>>a)|(v<<(32-a))}const M=Math.pow,maxWord=M(2,32);let result='',words=[],asciiBitLength=ascii.length*8,hash=[],k=[],primeCounter=0,isComposite={};for(let c=2;primeCounter<64;c++){if(!isComposite[c]){for(let i=0;i<313;i+=c)isComposite[i]=c;hash[primeCounter]=(M(c,.5)*maxWord)|0;k[primeCounter++]=(M(c,1/3)*maxWord)|0}}ascii+='\x80';while(ascii.length%64-56)ascii+='\x00';for(let i=0;i<ascii.length;i++){const j=ascii.charCodeAt(i);if(j>>8)return;words[i>>2]|=j<<((3-i)%4)*8}words[words.length]=(asciiBitLength/maxWord)|0;words[words.length]=asciiBitLength;for(let j=0;j<words.length;){const w=words.slice(j,j+=16),oldHash=hash;hash=hash.slice(0,8);for(let i=0;i<64;i++){const w15=w[i-15],w2=w[i-2],a=hash[0],e=hash[4],temp1=hash[7]+(R(e,6)^R(e,11)^R(e,25))+((e&hash[5])^(~e&hash[6]))+k[i]+(w[i]=i<16?w[i]:(w[i-16]+(R(w15,7)^R(w15,18)^(w15>>>3))+w[i-7]+(R(w2,17)^R(w2,19)^(w2>>>10)))|0),temp2=(R(a,2)^R(a,13)^R(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));hash=[(temp1+temp2)|0].concat(hash);hash[4]=(hash[4]+temp1)|0}for(let i=0;i<8;i++)hash[i]=(hash[i]+oldHash[i])|0}for(let i=0;i<8;i++)for(let j=3;j+1;j--){const b=(hash[i]>>(j*8))&255;result+=((b>>4).toString(16))+((b&15).toString(16))}return result}
+async function sha(t){try{if(crypto&&crypto.subtle){const b=new TextEncoder().encode(t);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}}catch(e){}const u=unescape(encodeURIComponent(t));return sha256js(u)}
+async function doLogin(){const id=document.getElementById('lid').value.trim(),pw=document.getElementById('lpw').value;if(!id||!pw){toast('아이디와 비밀번호를 입력하세요');return}
+ let h='';try{h=await sha(id+':'+pw)}catch(e){}
+ if(h===ADMIN_HASH){setMember(true,true);go('home');toast('관리자로 로그인했습니다')}else{toast('아이디 또는 비밀번호가 올바르지 않습니다')}}
+try{const a=sessionStorage.getItem('ib_auth');if(a==='admin')setTimeout(()=>setMember(true,true),0);else setMember(false)}catch(e){setMember(false)}
 
 /* qty & size (member) */
 let q=1,curP=P[0];
