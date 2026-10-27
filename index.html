@@ -394,13 +394,8 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
  </div>
 
  <div class="gut sec">
-  <div class="sec-head rv" style="border-bottom:0;padding-bottom:0"><h2 class="h2"><span class="lbl">Notice</span><span>공지사항</span></h2><a href="#verify" class="more" onclick="go('verify');return false">전체</a></div>
-  <div class="notice rv">
-   <a href="#verify" onclick="go('verify');return false"><time>[00.00]</time><span><span class="pill">필독</span>회원가입 이후 사업자·셀러 인증 후 이용 가능</span></a>
-   <a href="#verify" onclick="go('verify');return false"><time>[00.00]</time><span>제조사 · 브랜드 입점 안내</span></a>
-   <a href="#verify" onclick="go('verify');return false"><time>[00.00]</time><span>[00월] 입고 일정 안내</span></a>
-   <a href="#verify" onclick="go('verify');return false"><time>[00.00]</time><span>해외 바이어 · 외국인 사업자 가입 안내</span></a>
-  </div>
+  <div class="sec-head rv" style="border-bottom:0;padding-bottom:0"><h2 class="h2"><span class="lbl">Notice</span><span>공지사항</span></h2><a href="#notice" class="more" onclick="go('notice');return false">전체</a></div>
+  <div class="notice rv" id="notice-home"></div>
  </div>
 
  <div class="gut sec">
@@ -487,6 +482,15 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
  <div class="gut sec" style="padding-bottom:20px"><div class="sec-head"><h2 class="h2"><span class="lbl">Same brand</span><span>같은 브랜드 상품</span></h2></div><div class="grid" id="rel-grid"></div></div>
  <div class="dcta guest"><button class="btn btn-line" type="button" style="flex:1;padding:0;font-size:14px" onclick="go('verify')">인증 신청</button><button class="btn btn-ink" type="button" style="flex:2;padding:0;font-size:14px" onclick="openSheet()">가격 · 재고 문의</button></div>
 <div class="dcta mem"><div style="flex:1;display:flex;flex-direction:column;justify-content:center"><span class="lbl" style="font-size:9.5px">Total</span><b class="num" style="font-size:17px;letter-spacing:-.03em" id="d-total2">₩[0,000,000]</b></div><button class="btn btn-line" type="button" style="padding:0 14px;font-size:14px" onclick="toast(isAdmin?'견적함에 담았습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">견적함</button><button class="btn btn-ink" type="button" style="flex:1.2;padding:0;font-size:14px" onclick="toast(isAdmin?'주문 요청이 접수되었습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">주문 요청</button></div>
+</section>
+
+<!-- NOTICE -->
+<section class="view" id="v-notice">
+ <div class="gut" style="display:flex;flex-direction:column;gap:16px;padding-top:22px">
+  <div class="sec-head" style="border-bottom:0;padding-bottom:0"><h1 class="h2" style="font-size:28px"><span class="lbl">Notice</span><span>공지사항</span></h1></div>
+  <div class="faq" id="notice-all"></div>
+  <footer><div class="logo" style="font-size:16px">ITEM<em>BOX</em></div><div>상호 아이템박스 · 사업자등록번호 [000-00-00000] · 고객센터 [000-0000-0000]<br>© 2026 아이템박스</div></footer>
+ </div>
 </section>
 
 <!-- VERIFY -->
@@ -650,7 +654,18 @@ document.querySelectorAll('.rv').forEach(el=>{if(el.getBoundingClientRect().top>
 const steps=[...document.querySelectorAll('#steps .step')];let si=0;setInterval(()=>{steps.forEach(s=>s.classList.remove('active'));si=(si+1)%steps.length;steps[si].classList.add('active')},2200);
 
 /* views */
-const views={home:'v-home',list:'v-list',detail:'v-detail',verify:'v-verify'};
+const views={home:'v-home',list:'v-list',detail:'v-detail',verify:'v-verify',notice:'v-notice'};
+const NOTICES=[
+ {d:'2026-10-27',pin:true,t:'회원가입 이후 사업자·셀러 인증 후 이용이 가능합니다',b:'아이템박스는 제조사·도매·소매·셀러를 위한 폐쇄몰입니다. 회원가입 후 사업자등록증 사본과 가입 아이디·이름을 카카오톡 채널 또는 네이버 톡톡으로 보내주시면 접수 순서대로 승인해 드립니다. 승인 전에는 판매가와 재고가 표시되지 않습니다. 전화로는 승인 요청을 받지 않습니다.'},
+ {d:'2026-10-27',t:'아이템박스 오픈 안내',b:'아이템박스 사이트를 오픈했습니다. 현재 신발·뷰티·의류·잡화·브랜드 카테고리의 상품을 확인하실 수 있으며, 상품은 계속 추가됩니다. 가격·재고 문의와 샘플 요청은 카카오톡 채널 또는 네이버 톡톡으로 남겨주세요.'},
+ {d:'2026-10-27',t:'거래 원칙 안내 — 최저가 준수 · 판매처 등록',b:'제조사 브랜드 가치를 지키기 위해 네이버·구글 등 검색에 가격이 노출되는 웹 판매는 불가하며, 폐쇄몰·오프라인 매장·수출만 가능합니다. 구매 전 판매 채널 정보를 고객센터에 등록해 주세요. 판매처가 확인되지 않으면 출고되지 않습니다.'},
+ {d:'2026-10-27',t:'출고 및 샘플 안내',b:'입금 확인 후 2~3일 내 출고되며, 현장 판매로 보유 재고가 부족하면 최대 3일 소요될 수 있습니다. 샘플 수령 가능하며 문의 시 요청해 주세요. 창고 방문 시 사이트에 등록되지 않은 재고도 확인하실 수 있습니다.'}
+];
+function fmtD(d){return d.slice(2).replace(/-/g,'.')}
+function renderNotices(){const sorted=NOTICES.slice().sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||b.d.localeCompare(a.d));
+ document.getElementById('notice-home').innerHTML=sorted.slice(0,4).map((n,i)=>`<a href="#notice" onclick="go('notice');setTimeout(()=>{const d=document.querySelectorAll('#notice-all details')[${i}];if(d){d.open=true;d.scrollIntoView({block:'start'})}},50);return false"><time>${fmtD(n.d)}</time><span>${n.pin?'<span class="pill">필독</span>':''}${n.t}</span></a>`).join('');
+ document.getElementById('notice-all').innerHTML=sorted.map((n,i)=>`<details${i===0?' open':''}><summary><span style="display:flex;flex-direction:column;gap:4px;min-width:0"><span class="lbl" style="font-size:10px">${n.d.replace(/-/g,'.')}</span><span>${n.pin?'<span class="pill">필독</span>':''}${n.t}</span></span></summary><p>${n.b}</p></details>`).join('')}
+renderNotices();
 function go(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));const el=document.getElementById(views[v]);void el.offsetWidth;el.classList.add('on');document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v||(v==='detail'&&a.dataset.v==='list')||(v==='verify'&&a.dataset.v==='my')));document.querySelectorAll('#toptabs button').forEach((b,k)=>b.classList.toggle('on',(v==='home'&&k===0)||(v==='verify'&&b.textContent==='이용안내')||((v==='list'||v==='detail')&&b.textContent===curCat)));window.scrollTo({top:0,behavior:'instant'});topEl.classList.remove('shrink');try{history.replaceState(null,'','#'+v)}catch(e){}}
 document.querySelectorAll('.nav a[data-v]').forEach(a=>{if(['home','list','verify','my'].includes(a.dataset.v))a.addEventListener('click',e=>{e.preventDefault();if(a.dataset.v==='list')goCat('전체');else go(a.dataset.v==='my'?'verify':a.dataset.v)})});
 const h=(location.hash||'').replace('#','');if(views[h])go(h);
