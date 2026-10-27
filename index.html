@@ -459,7 +459,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
     <span class="num" style="font-size:12px;color:var(--mute);white-space:nowrap" id="d-qty-lbl">개 단위</span>
    </div>
    <div class="row" style="border-top:1px solid var(--line);padding-top:12px"><span class="lbl">Total</span><strong style="font-size:22px" id="d-total">₩[0,000,000]</strong></div>
-   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-line" type="button" onclick="toast('견적함에 담았습니다 (데모)')">견적함 담기</button><button class="btn btn-ink" type="button" onclick="toast('주문 요청이 접수되었습니다 (데모)')">주문 요청</button></div>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-line" type="button" onclick="toast(isAdmin?'견적함에 담았습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">견적함 담기</button><button class="btn btn-ink" type="button" onclick="toast(isAdmin?'주문 요청이 접수되었습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">주문 요청</button></div>
    <p class="p" style="font-size:11.5px">주문 요청 → 담당자 확인 → 입금 안내 → 입금 확인 후 2~3일 내 출고. 세금계산서 자동 발행.</p>
   </div>
   <dl class="kv">
@@ -486,15 +486,15 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
  </div>
  <div class="gut sec" style="padding-bottom:20px"><div class="sec-head"><h2 class="h2"><span class="lbl">Same brand</span><span>같은 브랜드 상품</span></h2></div><div class="grid" id="rel-grid"></div></div>
  <div class="dcta guest"><button class="btn btn-line" type="button" style="flex:1;padding:0;font-size:14px" onclick="go('verify')">인증 신청</button><button class="btn btn-ink" type="button" style="flex:2;padding:0;font-size:14px" onclick="openSheet()">가격 · 재고 문의</button></div>
-<div class="dcta mem"><div style="flex:1;display:flex;flex-direction:column;justify-content:center"><span class="lbl" style="font-size:9.5px">Total</span><b class="num" style="font-size:17px;letter-spacing:-.03em" id="d-total2">₩[0,000,000]</b></div><button class="btn btn-line" type="button" style="padding:0 14px;font-size:14px" onclick="toast('견적함에 담았습니다 (데모)')">견적함</button><button class="btn btn-ink" type="button" style="flex:1.2;padding:0;font-size:14px" onclick="toast('주문 요청이 접수되었습니다 (데모)')">주문 요청</button></div>
+<div class="dcta mem"><div style="flex:1;display:flex;flex-direction:column;justify-content:center"><span class="lbl" style="font-size:9.5px">Total</span><b class="num" style="font-size:17px;letter-spacing:-.03em" id="d-total2">₩[0,000,000]</b></div><button class="btn btn-line" type="button" style="padding:0 14px;font-size:14px" onclick="toast(isAdmin?'견적함에 담았습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">견적함</button><button class="btn btn-ink" type="button" style="flex:1.2;padding:0;font-size:14px" onclick="toast(isAdmin?'주문 요청이 접수되었습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">주문 요청</button></div>
 </section>
 
 <!-- VERIFY -->
 <section class="view" id="v-verify">
  <div class="gut mem" style="display:flex;flex-direction:column;gap:18px;padding-top:22px">
-  <div><span class="lbl">My page</span><h1 class="h2" style="font-size:28px;margin-top:8px">아이템박스 관리자</h1><div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><span class="memchip"><i></i>정회원 승인</span><span class="chip sm">소매점 (매장)</span><span class="chip sm">판매처 등록 완료</span></div></div>
+  <div><span class="lbl">My page</span><h1 class="h2" style="font-size:28px;margin-top:8px" id="my-title">아이템박스 관리자</h1><div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><span class="memchip"><i></i>정회원 승인</span><span class="chip sm">소매점 (매장)</span><span class="chip sm">판매처 등록 완료</span></div></div>
   <div class="memcard">
-   <div class="row"><span>아이디</span><b>[itembox_user]</b></div>
+   <div class="row"><span>아이디</span><b id="my-id">itembox_admin</b></div>
    <div class="row"><span>승인일</span><b>[2026-00-00]</b></div>
    <div class="row"><span>등록 판매처</span><b>[매장명 · 주소]</b></div>
    <div class="row"><span>세금계산서 이메일</span><b>[email@company.com]</b></div>
@@ -512,7 +512,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
    <button class="doc" type="button" style="text-align:left;width:100%" onclick="toast('실제 사이트에서 연결됩니다')"><i>04</i><div><b>샘플 요청</b><br>카카오톡·톡톡으로 품번과 사이즈를 보내주세요</div></button>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-kakao" type="button" onclick="toast('카카오톡 채널 링크를 넣어주세요')">카카오톡</button><button class="btn btn-talk" type="button" onclick="toast('네이버 톡톡 링크를 넣어주세요')">톡톡</button></div>
-  <form class="form" onsubmit="event.preventDefault();changePw()">
+  <form class="form adm" onsubmit="event.preventDefault();changePw()">
    <h3>비밀번호 변경</h3>
    <div class="field"><label for="pw-cur">Current password</label><input id="pw-cur" class="input" type="password" placeholder="현재 비밀번호" autocomplete="current-password"></div>
    <div class="field"><label for="pw-new">New password</label><input id="pw-new" class="input" type="password" placeholder="새 비밀번호 (8자 이상)" autocomplete="new-password"></div>
@@ -669,6 +669,7 @@ let tx=null;const gal=document.getElementById('gallery');gal.addEventListener('t
 
 /* member / admin mode */
 const ADMIN_HASH_DEFAULT='3b9838ba8c774a5a555784f2c2fc8fc8d0f723f43c61379352960990fd0b161c';
+const VIEWER_HASH='cf103071baa110fcaefc5a43869fd35c26c4e87e1af88c818881b731c2b6ce5f';
 function adminHash(){try{return localStorage.getItem('ib_admin_hash')||ADMIN_HASH_DEFAULT}catch(e){return ADMIN_HASH_DEFAULT}}
 async function changePw(){const cur=document.getElementById('pw-cur').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value;
  if(!cur||!n1){toast('현재 비밀번호와 새 비밀번호를 입력하세요');return}
@@ -679,7 +680,7 @@ async function changePw(){const cur=document.getElementById('pw-cur').value,n1=d
  document.getElementById('pw-cur').value=document.getElementById('pw-new').value=document.getElementById('pw-new2').value='';
  document.getElementById('pw-code').textContent=h;document.getElementById('pw-done').hidden=false;toast('비밀번호를 변경했습니다')}
 let isAdmin=false;
-function setMember(on,admin){isAdmin=!!admin;document.body.classList.toggle('member',on);document.querySelectorAll('.guest').forEach(el=>el.hidden=on);document.querySelectorAll('.mem').forEach(el=>el.hidden=!on);document.querySelectorAll('.memchip').forEach(c=>{const t=c.childNodes[c.childNodes.length-1];if(t&&t.nodeType===3)t.textContent=admin?'관리자':'정회원'});
+function setMember(on,admin){isAdmin=!!admin;document.body.classList.toggle('member',on);document.querySelectorAll('.guest').forEach(el=>el.hidden=on);document.querySelectorAll('.mem').forEach(el=>el.hidden=!on);document.querySelectorAll('.memchip').forEach(c=>{const t=c.childNodes[c.childNodes.length-1];if(t&&t.nodeType===3)t.textContent=admin?'관리자':'정회원'});document.querySelectorAll('.adm').forEach(el=>el.hidden=!admin);const mt=document.getElementById('my-title');if(mt)mt.textContent=admin?'아이템박스 관리자':'소매점 회원 (보기용)';const mi=document.getElementById('my-id');if(mi)mi.textContent=admin?'itembox_admin':'itembox_guest';
  // re-render product grids so price rows reflect the mode
  if(typeof goCat==='function'&&typeof pick==='function'){document.getElementById('home-grid').innerHTML=[P[0],P[2],...pick('뷰티',1),P[12]].map(p=>card(p)).join('');goCat(curCat,curSub,true)}
  try{if(on)sessionStorage.setItem('ib_auth',admin?'admin':'member');else sessionStorage.removeItem('ib_auth')}catch(e){}}
@@ -687,8 +688,10 @@ function sha256js(ascii){function R(v,a){return(v>>>a)|(v<<(32-a))}const M=Math.
 async function sha(t){try{if(crypto&&crypto.subtle){const b=new TextEncoder().encode(t);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}}catch(e){}const u=unescape(encodeURIComponent(t));return sha256js(u)}
 async function doLogin(){const id=document.getElementById('lid').value.trim(),pw=document.getElementById('lpw').value;if(!id||!pw){toast('아이디와 비밀번호를 입력하세요');return}
  let h='';try{h=await sha(id+':'+pw)}catch(e){}
- if(h===adminHash()){setMember(true,true);go('home');toast('관리자로 로그인했습니다')}else{toast('아이디 또는 비밀번호가 올바르지 않습니다')}}
-try{const a=sessionStorage.getItem('ib_auth');if(a==='admin')setTimeout(()=>setMember(true,true),0);else setMember(false)}catch(e){setMember(false)}
+ if(id==='itembox_admin'&&h===adminHash()){setMember(true,true);go('home');toast('관리자로 로그인했습니다')}
+ else if(h===VIEWER_HASH){setMember(true,false);go('home');toast('정회원으로 로그인했습니다')}
+ else{toast('아이디 또는 비밀번호가 올바르지 않습니다')}}
+try{const a=sessionStorage.getItem('ib_auth');if(a==='admin')setTimeout(()=>setMember(true,true),0);else if(a==='member')setTimeout(()=>setMember(true,false),0);else setMember(false)}catch(e){setMember(false)}
 
 /* qty & size (member) */
 let q=1,curP=P[0];
