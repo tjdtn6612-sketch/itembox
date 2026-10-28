@@ -41,7 +41,7 @@ img{max-width:100%}
 .btn-acc{background:var(--accent);color:var(--accent-ink)}
 .btn-line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
 .btn-ghost{background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
-.btn-kakao{background:var(--kakao);color:#111}.btn-talk{background:var(--talk);color:#fff}
+.btn-kakao{background:var(--kakao);color:#111}
 button:focus-visible,a:focus-visible,.input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* top */
@@ -390,7 +390,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
   <p class="p rv">일반 소비자 가입으로 매입 단가가 노출되는 일을 막기 위해, 관리자 승인을 거친 정회원에게만 판매가와 재고를 공개합니다.</p>
   <div class="steps rv" id="steps">
    <div class="step active"><span class="n">01</span><div><b>회원가입</b><span>아이디 생성. 가격은 "회원공개"로 표시됩니다.</span></div></div>
-   <div class="step"><span class="n">02</span><div><b>서류 전송</b><span>사업자등록증 + 아이디 + 이름을 카카오톡·톡톡으로 보내주세요.</span></div></div>
+   <div class="step"><span class="n">02</span><div><b>서류 전송</b><span>사업자등록증 + 아이디 + 이름을 카카오톡으로 보내주세요.</span></div></div>
    <div class="step"><span class="n">03</span><div><b>승인 완료</b><span>접수 순서대로 승인. 로그인하면 판매가·재고가 열립니다.</span></div></div>
   </div>
   <button class="btn btn-acc rv" type="button" onclick="go('verify')">회원가입 · 인증 신청</button>
@@ -414,10 +414,10 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
  <div class="gut sec">
   <div class="contact rv">
    <span class="lbl">Contact</span>
-   <h2 class="h2" style="color:#fff">고객센터 · 승인 신청</h2>
-   <p class="p" style="font-size:13px">인증 신청과 상품·샘플 문의는 카카오톡 채널 또는 네이버 톡톡으로 받습니다. 전화로는 승인 처리가 되지 않습니다.</p>
-   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-kakao" type="button" onclick="toast('카카오톡 채널 링크를 넣어주세요')">카카오톡</button><button class="btn btn-talk" type="button" onclick="toast('네이버 톡톡 링크를 넣어주세요')">톡톡</button></div>
-   <div class="m">고객센터 <strong id="tel" class="num">010-2433-0854</strong> <button class="copy" type="button" onclick="copyText('tel')">COPY</button><br>평일 [09:00–18:00] · 입금계좌 [은행 계좌번호 / 예금주]<br>창고 [주소] · 방문 시 사이트 미등록 재고도 확인 가능</div>
+   <h2 class="h2" style="color:#fff">문의 · 승인 신청</h2>
+   <p class="p" style="font-size:13px">인증 신청과 상품·샘플 문의는 카카오톡 1:1 오픈채팅으로 받습니다. 전화로는 승인 처리가 되지 않습니다.</p>
+   <div style="display:grid;gap:8px"><a class="btn btn-kakao" href="#kakao" onclick="return openKakao()">카카오톡 1:1 문의</a></div>
+   <div class="m">운영시간 평일 09:00–18:00 · 승인·문의는 카카오톡으로만 받습니다<br>창고 전북 전주시 덕진구 오공로 43-34, 603호 · 방문 시 사이트 미등록 재고도 확인 가능</div>
   </div>
   <footer>
    <div class="footlinks"><a href="#terms" onclick="go('terms');return false">이용약관</a><a href="#privacy" onclick="go('privacy');return false"><b>개인정보처리방침</b></a><a href="#returns" onclick="go('returns');return false">청약철회·반품 안내</a><a href="#notice" onclick="go('notice');return false">공지사항</a></div>
@@ -471,7 +471,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
     <span class="num" style="font-size:12px;color:var(--mute);white-space:nowrap" id="d-qty-lbl">개 단위</span>
    </div>
    <div class="row" style="border-top:1px solid var(--line);padding-top:12px"><span class="lbl">Total</span><strong style="font-size:22px" id="d-total">₩[0,000,000]</strong></div>
-   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-line" type="button" onclick="toast(isAdmin?'견적함에 담았습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">견적함 담기</button><button class="btn btn-ink" type="button" onclick="toast(isAdmin?'주문 요청이 접수되었습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">주문 요청</button></div>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-line" type="button" onclick="toast(isAdmin?'견적함에 담았습니다 (데모)':'주문·견적은 카카오톡으로 문의해 주세요')">견적함 담기</button><button class="btn btn-ink" type="button" onclick="toast(isAdmin?'주문 요청이 접수되었습니다 (데모)':'주문·견적은 카카오톡으로 문의해 주세요')">주문 요청</button></div>
    <p class="p" style="font-size:11.5px">주문 요청 → 담당자 확인 → 입금 안내 → 입금 확인 후 2~3일 내 출고. 세금계산서 자동 발행.</p>
   </div>
   <dl class="kv">
@@ -482,8 +482,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
    <dt>Docs</dt><dd>거래명세서 · 전자세금계산서</dd>
   </dl>
   <div style="display:flex;gap:8px">
-   <button class="btn btn-kakao" type="button" style="flex:1;padding:0;font-size:14px" onclick="toast('카카오톡 채널 링크를 넣어주세요')">카카오톡</button>
-   <button class="btn btn-talk" type="button" style="flex:1;padding:0;font-size:14px" onclick="toast('네이버 톡톡 링크를 넣어주세요')">톡톡</button>
+   <a class="btn btn-kakao" href="#kakao" style="flex:1;padding:0;font-size:14px" onclick="return openKakao()">카카오톡 문의</a>
    <button class="btn btn-line" type="button" aria-label="관심상품" style="width:54px;padding:0" onclick="toast('관심상품에 담았습니다')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
   </div>
  </div>
@@ -499,7 +498,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
  </div>
  <div class="gut sec" style="padding-bottom:20px"><div class="sec-head"><h2 class="h2"><span class="lbl">Same brand</span><span>같은 브랜드 상품</span></h2></div><div class="grid" id="rel-grid"></div></div>
  <div class="dcta guest"><button class="btn btn-line" type="button" style="flex:1;padding:0;font-size:14px" onclick="go('verify')">인증 신청</button><button class="btn btn-ink" type="button" style="flex:2;padding:0;font-size:14px" onclick="openSheet()">가격 · 재고 문의</button></div>
-<div class="dcta mem"><div style="flex:1;display:flex;flex-direction:column;justify-content:center"><span class="lbl" style="font-size:9.5px">Total</span><b class="num" style="font-size:17px;letter-spacing:-.03em" id="d-total2">₩[0,000,000]</b></div><button class="btn btn-line" type="button" style="padding:0 14px;font-size:14px" onclick="toast(isAdmin?'견적함에 담았습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">견적함</button><button class="btn btn-ink" type="button" style="flex:1.2;padding:0;font-size:14px" onclick="toast(isAdmin?'주문 요청이 접수되었습니다 (데모)':'주문·견적은 카카오톡·톡톡으로 문의해 주세요')">주문 요청</button></div>
+<div class="dcta mem"><div style="flex:1;display:flex;flex-direction:column;justify-content:center"><span class="lbl" style="font-size:9.5px">Total</span><b class="num" style="font-size:17px;letter-spacing:-.03em" id="d-total2">₩[0,000,000]</b></div><button class="btn btn-line" type="button" style="padding:0 14px;font-size:14px" onclick="toast(isAdmin?'견적함에 담았습니다 (데모)':'주문·견적은 카카오톡으로 문의해 주세요')">견적함</button><button class="btn btn-ink" type="button" style="flex:1.2;padding:0;font-size:14px" onclick="toast(isAdmin?'주문 요청이 접수되었습니다 (데모)':'주문·견적은 카카오톡으로 문의해 주세요')">주문 요청</button></div>
 </section>
 
 <!-- NOTICE -->
@@ -519,7 +518,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
 <h2>제4조 (서비스의 제공 및 변경)</h2><p>① 회사는 상품 정보 제공, 거래 조건 안내, 견적·주문 접수, 기타 회사가 정하는 업무를 수행합니다.<br>② 회사는 상품의 품절 또는 사양 변경 등의 경우 장차 체결되는 계약에 의해 제공할 상품의 내용을 변경할 수 있으며, 이 경우 변경된 내용을 몰에 공지합니다.</p>
 <h2>제5조 (회원가입 및 정회원 승인)</h2><p>① 이용자는 회사가 정한 가입 양식에 따라 회원정보를 기입하고 이 약관에 동의한다는 의사표시를 함으로써 회원가입을 신청합니다.<br>② 회원이 판매가·재고 정보를 열람하거나 거래하려면 사업자등록증 사본, 판매 채널 정보 등 회사가 요구하는 증빙을 제출하고 회사의 승인을 받아야 합니다. 회사는 증빙이 불충분하거나 거래 목적이 몰의 운영 취지에 맞지 않는다고 판단되는 경우 승인을 거절하거나 보류할 수 있습니다.<br>③ 다음 각 호에 해당하는 경우 회사는 가입 또는 승인을 거절할 수 있습니다. 1. 타인의 명의를 이용한 경우 2. 허위 정보를 기재한 경우 3. 기타 회원으로 등록하는 것이 회사의 기술상 또는 운영상 현저히 지장이 있다고 판단되는 경우</p>
 <h2>제6조 (거래 원칙)</h2><p>① 정회원은 회사가 고지한 제조사의 판매가 정책(최저가 기준)을 준수하여야 하며, 이를 위반하여 제조사 또는 회사에 손해가 발생한 경우 거래가 중단될 수 있습니다.<br>② 정회원은 구매 전 판매 채널(매장·온라인몰 주소 등)을 회사에 등록하여야 하며, 판매처가 확인되지 않는 경우 출고가 보류될 수 있습니다.<br>③ 네이버·구글 등 검색에 가격이 노출되는 오픈마켓·웹 판매는 허용되지 않으며, 폐쇄몰·오프라인 매장·수출 판매만 가능합니다.</p>
-<h2>제7조 (주문 및 대금 지급)</h2><p>① 주문은 몰 또는 회사가 지정한 연락 수단(카카오톡 채널, 네이버 톡톡 등)을 통해 접수되며, 회사의 확인 후 계약이 성립합니다.<br>② 대금은 회사가 안내하는 계좌로 무통장입금하며, 입금 확인 후 출고됩니다. 세금계산서는 입금 확인 후 발행됩니다.</p>
+<h2>제7조 (주문 및 대금 지급)</h2><p>① 주문은 몰 또는 회사가 지정한 연락 수단(카카오톡 오픈채팅 등)을 통해 접수되며, 회사의 확인 후 계약이 성립합니다.<br>② 대금은 회사가 안내하는 계좌로 무통장입금하며, 입금 확인 후 출고됩니다. 세금계산서는 입금 확인 후 발행됩니다.</p>
 <h2>제8조 (배송)</h2><p>① 회사는 입금 확인일로부터 2~3영업일 이내에 출고함을 원칙으로 하되, 재고 상황에 따라 최대 3영업일이 추가로 소요될 수 있습니다.<br>② 배송비·화물 운임은 주문 시 별도 안내합니다.</p>
 <h2>제9조 (청약철회 및 반품)</h2><p>① 「전자상거래 등에서의 소비자보호에 관한 법률」이 적용되는 소비자인 이용자는 상품을 공급받은 날부터 7일 이내에 청약을 철회할 수 있습니다. 다만 이용자의 사용 또는 일부 소비로 상품의 가치가 현저히 감소한 경우, 포장을 개봉하여 재판매가 곤란한 경우 등 법령이 정한 사유에 해당하면 청약철회가 제한됩니다.<br>② 사업자 간 거래(B2B)의 경우 상호 합의한 거래 조건에 따르며, 상품 하자가 아닌 단순 변심에 의한 반품은 제한될 수 있습니다.<br>③ 상품의 하자 또는 오배송의 경우 수령일로부터 [7]일 이내에 회사에 통지하면 교환 또는 환불이 가능하며, 이 경우 배송비는 회사가 부담합니다.</p>
 <h2>제10조 (개인정보보호)</h2><p>회사는 이용자의 개인정보를 관련 법령에 따라 보호하며, 개인정보의 수집·이용·보관·파기에 관한 사항은 별도의 개인정보처리방침에 따릅니다.</p>
@@ -530,11 +529,11 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
 </div></div></section>
 <section class="view legal" id="v-privacy"><div class="gut" style="padding-top:22px"><button type="button" class="more" onclick="go('home')">← 홈</button><h1 class="h2" style="font-size:26px;margin:16px 0 8px">개인정보처리방침</h1><div class="legal-body">
 <p>제이유앤물류(이하 "회사")은 「개인정보 보호법」에 따라 이용자의 개인정보를 보호하고 이와 관련한 고충을 신속하게 처리하기 위하여 다음과 같이 개인정보처리방침을 수립·공개합니다.</p>
-<h2>1. 수집하는 개인정보 항목 및 수집 방법</h2><p>① 회원가입 시: 아이디, 비밀번호, 이름(상호), 연락처, 회원 구분<br>② 정회원 승인 시: 사업자등록증 사본(상호, 대표자명, 사업자등록번호, 사업장 주소), 판매 채널 정보, 세금계산서 발행용 이메일<br>③ 주문·거래 시: 배송지 주소, 입금자명<br>④ 서비스 이용 과정에서 접속 IP, 접속 일시, 기기 정보가 자동으로 생성·수집될 수 있습니다.<br>⑤ 수집 방법: 홈페이지 회원가입 양식, 카카오톡 채널·네이버 톡톡을 통한 서류 제출, 전화·이메일</p>
+<h2>1. 수집하는 개인정보 항목 및 수집 방법</h2><p>① 회원가입 시: 아이디, 비밀번호, 이름(상호), 연락처, 회원 구분<br>② 정회원 승인 시: 사업자등록증 사본(상호, 대표자명, 사업자등록번호, 사업장 주소), 판매 채널 정보, 세금계산서 발행용 이메일<br>③ 주문·거래 시: 배송지 주소, 입금자명<br>④ 서비스 이용 과정에서 접속 IP, 접속 일시, 기기 정보가 자동으로 생성·수집될 수 있습니다.<br>⑤ 수집 방법: 홈페이지 회원가입 양식, 카카오톡 오픈채팅을 통한 서류 제출, 전화·이메일</p>
 <h2>2. 개인정보의 수집 및 이용 목적</h2><p>① 회원 관리: 회원제 서비스 제공, 본인 확인, 사업자·셀러 인증 및 승인, 부정 이용 방지<br>② 거래 이행: 견적·주문 접수, 대금 결제 확인, 상품 배송, 세금계산서 발행<br>③ 고객 응대: 문의·불만 처리, 공지사항 전달<br>④ 법령상 의무 이행: 전자상거래법·세법 등에 따른 거래 기록 보관</p>
 <h2>3. 개인정보의 보유 및 이용 기간</h2><p>① 회원 탈퇴 시 지체 없이 파기합니다. 다만 다음의 경우 명시한 기간 동안 보관합니다.<br>② 전자상거래법: 계약 또는 청약철회 등에 관한 기록 5년, 대금결제 및 재화 공급에 관한 기록 5년, 소비자 불만 또는 분쟁 처리에 관한 기록 3년<br>③ 통신비밀보호법: 접속 기록 3개월<br>④ 국세기본법·부가가치세법: 세금계산서 등 거래 증빙 5년</p>
 <h2>4. 개인정보의 제3자 제공</h2><p>회사는 이용자의 개인정보를 제2조에서 고지한 범위 내에서만 이용하며, 이용자의 사전 동의 없이 제3자에게 제공하지 않습니다. 다만 법령에 특별한 규정이 있는 경우는 예외로 합니다.</p>
-<h2>5. 개인정보 처리의 위탁</h2><p>회사는 서비스 제공을 위해 다음과 같이 업무를 위탁합니다.<br>- 홈페이지 호스팅: GitHub, Inc. (미국) — 서비스 제공을 위한 정보 저장<br>- 택배·화물 배송: [택배사명] — 상품 배송<br>- 메시지 상담: 카카오(카카오톡 채널), 네이버(톡톡) — 문의 응대<br>위탁 업체가 변경될 경우 본 방침을 통해 공개합니다.</p>
+<h2>5. 개인정보 처리의 위탁</h2><p>회사는 서비스 제공을 위해 다음과 같이 업무를 위탁합니다.<br>- 홈페이지 호스팅: GitHub, Inc. (미국) — 서비스 제공을 위한 정보 저장<br>- 택배·화물 배송: [택배사명] — 상품 배송<br>- 메시지 상담: 카카오(카카오톡 오픈채팅) — 문의 응대<br>위탁 업체가 변경될 경우 본 방침을 통해 공개합니다.</p>
 <h2>6. 개인정보의 파기 절차 및 방법</h2><p>보유 기간이 경과하거나 처리 목적이 달성된 개인정보는 지체 없이 파기합니다. 전자적 파일은 복구할 수 없는 방법으로 삭제하고, 종이 문서는 분쇄 또는 소각합니다.</p>
 <h2>7. 이용자의 권리와 행사 방법</h2><p>이용자는 언제든지 자신의 개인정보를 조회·수정할 수 있으며, 회원 탈퇴 또는 개인정보 삭제를 요청할 수 있습니다. 요청은 아래 개인정보보호책임자에게 서면, 전화, 이메일로 하실 수 있으며 회사는 지체 없이 조치합니다.</p>
 <h2>8. 개인정보의 안전성 확보 조치</h2><p>회사는 비밀번호 암호화 저장, 접근 권한 관리, 개인정보 취급 직원 최소화 등 안전성 확보에 필요한 조치를 취하고 있습니다.</p>
@@ -544,7 +543,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
 <section class="view legal" id="v-returns"><div class="gut" style="padding-top:22px"><button type="button" class="more" onclick="go('home')">← 홈</button><h1 class="h2" style="font-size:26px;margin:16px 0 8px">청약철회 · 교환 · 반품 안내</h1><div class="legal-body">
 <h2>청약철회 (소비자 구매 시)</h2><p>「전자상거래 등에서의 소비자보호에 관한 법률」이 적용되는 소비자는 상품을 받은 날부터 <b>7일 이내</b> 청약을 철회할 수 있습니다. 다음의 경우 청약철회가 제한됩니다.<br>- 포장을 개봉하거나 사용하여 상품의 가치가 현저히 감소한 경우 (화장품 개봉, 신발 착용 흔적 등)<br>- 시간이 지나 재판매가 곤란할 정도로 가치가 감소한 경우<br>- 복제가 가능한 상품의 포장을 훼손한 경우</p>
 <h2>사업자 간 거래 (정회원)</h2><p>정회원과의 거래는 사업자 간 거래로서 상호 합의한 조건에 따릅니다. 단순 변심에 의한 반품은 제한될 수 있으며, 박스 단위 거래의 경우 박스 개봉 후 낱개 반품은 불가합니다.</p>
-<h2>교환·반품이 가능한 경우</h2><p>- 상품에 하자가 있는 경우<br>- 주문한 상품과 다른 상품이 배송된 경우<br>- 배송 중 파손된 경우<br>위 경우 수령일로부터 <b>[7]일 이내</b> 카카오톡 채널 또는 톡톡으로 사진과 함께 알려주시면 교환 또는 환불해 드리며, 반송비는 회사가 부담합니다.</p>
+<h2>교환·반품이 가능한 경우</h2><p>- 상품에 하자가 있는 경우<br>- 주문한 상품과 다른 상품이 배송된 경우<br>- 배송 중 파손된 경우<br>위 경우 수령일로부터 <b>[7]일 이내</b> 카카오톡으로 사진과 함께 알려주시면 교환 또는 환불해 드리며, 반송비는 회사가 부담합니다.</p>
 <h2>환불 방법</h2><p>환불은 입금 계좌로 반품 상품 확인 후 <b>[3]영업일 이내</b> 처리됩니다. 세금계산서가 발행된 경우 수정세금계산서를 발행합니다.</p>
 <h2>반품 주소</h2><p>전북특별자치도 전주시 덕진구 오공로 43-34, 603호 · 담당 박준호 · 010-2433-0854<br>반품 전 반드시 사전 연락 후 보내주세요. 사전 연락 없는 반품은 처리가 지연될 수 있습니다.</p>
 </div></div></section>
@@ -569,9 +568,9 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
    <button class="doc" type="button" style="text-align:left;width:100%" onclick="toast('실제 사이트에서 연결됩니다')"><i>01</i><div><b>주문 · 입금 안내</b><br>주문 요청 후 입금 계좌와 금액을 안내드립니다</div></button>
    <button class="doc" type="button" style="text-align:left;width:100%" onclick="toast('실제 사이트에서 연결됩니다')"><i>02</i><div><b>세금계산서</b><br>입금 확인 후 등록된 이메일로 자동 발행</div></button>
    <button class="doc" type="button" style="text-align:left;width:100%" onclick="toast('실제 사이트에서 연결됩니다')"><i>03</i><div><b>판매처 변경 · 추가</b><br>판매 채널이 바뀌면 고객센터로 알려주세요</div></button>
-   <button class="doc" type="button" style="text-align:left;width:100%" onclick="toast('실제 사이트에서 연결됩니다')"><i>04</i><div><b>샘플 요청</b><br>카카오톡·톡톡으로 품번과 사이즈를 보내주세요</div></button>
+   <button class="doc" type="button" style="text-align:left;width:100%" onclick="toast('실제 사이트에서 연결됩니다')"><i>04</i><div><b>샘플 요청</b><br>카카오톡으로 품번과 사이즈를 보내주세요</div></button>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-kakao" type="button" onclick="toast('카카오톡 채널 링크를 넣어주세요')">카카오톡</button><button class="btn btn-talk" type="button" onclick="toast('네이버 톡톡 링크를 넣어주세요')">톡톡</button></div>
+  <div style="display:grid;gap:8px"><a class="btn btn-kakao" href="#kakao" onclick="return openKakao()">카카오톡 1:1 문의</a></div>
   <form class="form adm" onsubmit="event.preventDefault();changePw()">
    <h3>비밀번호 변경</h3>
    <div class="field"><label for="pw-cur">Current password</label><input id="pw-cur" class="input" type="password" placeholder="현재 비밀번호" autocomplete="current-password"></div>
@@ -597,11 +596,11 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
   <div><div class="sec-head" style="border-bottom:0;padding-bottom:10px"><h2 class="h2" style="font-size:18px"><span class="lbl">Process</span><span>인증 3단계</span></h2></div>
    <div class="steps">
     <div class="step active"><span class="n">01</span><div><b>회원가입</b><span>아래 양식으로 아이디 생성</span></div></div>
-    <div class="step"><span class="n">02</span><div><b>서류 전송</b><span>사업자등록증 + 아이디 + 이름을 카카오톡·톡톡으로</span></div></div>
+    <div class="step"><span class="n">02</span><div><b>서류 전송</b><span>사업자등록증 + 아이디 + 이름을 카카오톡으로</span></div></div>
     <div class="step"><span class="n">03</span><div><b>승인 완료</b><span>접수순 승인 후 가격·재고 공개</span></div></div>
    </div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn btn-kakao" type="button" onclick="toast('카카오톡 채널 링크를 넣어주세요')">카카오톡으로 서류</button><button class="btn btn-talk" type="button" onclick="toast('네이버 톡톡 링크를 넣어주세요')">톡톡으로 서류</button></div>
+  <div style="display:grid;gap:8px"><a class="btn btn-kakao" href="#kakao" onclick="return openKakao()">카카오톡으로 서류 보내기</a></div>
   <p class="p" style="font-size:12px;margin-top:-8px">전화로는 승인 요청을 받지 않습니다. 접수 순서대로 처리됩니다.</p>
   <div><div class="sec-head" style="border-bottom:0;padding-bottom:10px"><h2 class="h2" style="font-size:18px"><span class="lbl">Documents</span><span>승인 대상과 필요 서류</span></h2></div>
    <div class="docs">
@@ -717,8 +716,8 @@ const steps=[...document.querySelectorAll('#steps .step')];let si=0;setInterval(
 /* views */
 const views={home:'v-home',list:'v-list',detail:'v-detail',verify:'v-verify',notice:'v-notice',terms:'v-terms',privacy:'v-privacy',returns:'v-returns'};
 const NOTICES=[
- {d:'2026-10-27',pin:true,t:'회원가입 이후 사업자·셀러 인증 후 이용이 가능합니다',b:'아이템박스는 제조사·도매·소매·셀러를 위한 폐쇄몰입니다. 회원가입 후 사업자등록증 사본과 가입 아이디·이름을 카카오톡 채널 또는 네이버 톡톡으로 보내주시면 접수 순서대로 승인해 드립니다. 승인 전에는 판매가와 재고가 표시되지 않습니다. 전화로는 승인 요청을 받지 않습니다.'},
- {d:'2026-10-27',t:'아이템박스 오픈 안내',b:'아이템박스 사이트를 오픈했습니다. 현재 신발·뷰티·의류·잡화·브랜드 카테고리의 상품을 확인하실 수 있으며, 상품은 계속 추가됩니다. 가격·재고 문의와 샘플 요청은 카카오톡 채널 또는 네이버 톡톡으로 남겨주세요.'},
+ {d:'2026-10-27',pin:true,t:'회원가입 이후 사업자·셀러 인증 후 이용이 가능합니다',b:'아이템박스는 제조사·도매·소매·셀러를 위한 폐쇄몰입니다. 회원가입 후 사업자등록증 사본과 가입 아이디·이름을 카카오톡 오픈채팅으로 보내주시면 접수 순서대로 승인해 드립니다. 승인 전에는 판매가와 재고가 표시되지 않습니다. 전화로는 승인 요청을 받지 않습니다.'},
+ {d:'2026-10-27',t:'아이템박스 오픈 안내',b:'아이템박스 사이트를 오픈했습니다. 현재 신발·뷰티·의류·잡화·브랜드 카테고리의 상품을 확인하실 수 있으며, 상품은 계속 추가됩니다. 가격·재고 문의와 샘플 요청은 카카오톡 오픈채팅으로 남겨주세요.'},
  {d:'2026-10-27',t:'거래 원칙 안내 — 최저가 준수 · 판매처 등록',b:'제조사 브랜드 가치를 지키기 위해 네이버·구글 등 검색에 가격이 노출되는 웹 판매는 불가하며, 폐쇄몰·오프라인 매장·수출만 가능합니다. 구매 전 판매 채널 정보를 고객센터에 등록해 주세요. 판매처가 확인되지 않으면 출고되지 않습니다.'},
  {d:'2026-10-27',t:'출고 및 샘플 안내',b:'입금 확인 후 2~3일 내 출고되며, 현장 판매로 보유 재고가 부족하면 최대 3일 소요될 수 있습니다. 샘플 수령 가능하며 문의 시 요청해 주세요. 창고 방문 시 사이트에 등록되지 않은 재고도 확인하실 수 있습니다.'}
 ];
@@ -783,6 +782,9 @@ function calc(){const t=won(curP.w*q);document.getElementById('d-total').textCon
 function fillMember(p){curP=p;q=1;const u=unitOf(p);document.getElementById('qtyv').textContent=1;document.getElementById('d-price').textContent=won(p.w);document.getElementById('d-retail').textContent=won(p.r);document.getElementById('d-boxp').textContent=won(p.w*p.n_);document.getElementById('d-boxn').textContent=p.n_;document.getElementById('d-stock').textContent=(p.st*p.n_).toLocaleString('ko-KR');['d-unit-lbl','d-unit-lbl2','d-unit-lbl3'].forEach(id=>document.getElementById(id).textContent=u);document.getElementById('d-qty-lbl').textContent=u+' 단위';
  let sizes=[250,255,260,265,270,275,280,285],per=[2,3,4,5,4,3,2,1];if(p.sizes){sizes=Object.keys(p.sizes);per=Object.values(p.sizes)}document.getElementById('sizepick').innerHTML=sizes.map((s,k)=>`<button type="button" class="on" onclick="this.classList.toggle('on')"${p.st===0?' disabled':''}>${s}<small>${p.sizes?per[k]+'장':'×'+per[k]}</small></button>`).join('');calc()}
 
+/* kakao */
+const KAKAO_URL='';  // 오픈채팅 1:1 링크 (https://open.kakao.com/o/...) — 받으면 여기에 넣음
+function openKakao(){if(KAKAO_URL){window.open(KAKAO_URL,'_blank');return false}toast('카카오톡 오픈채팅 링크 준비 중입니다');return false}
 /* sheet, toast, copy */
 function openSheet(){document.getElementById('sheet').classList.add('on');document.getElementById('sheet-bg').classList.add('on')}
 function closeSheet(){document.getElementById('sheet').classList.remove('on');document.getElementById('sheet-bg').classList.remove('on')}
