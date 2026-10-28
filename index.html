@@ -783,7 +783,7 @@ function fillMember(p){curP=p;q=1;const u=unitOf(p);document.getElementById('qty
  let sizes=[250,255,260,265,270,275,280,285],per=[2,3,4,5,4,3,2,1];if(p.sizes){sizes=Object.keys(p.sizes);per=Object.values(p.sizes)}document.getElementById('sizepick').innerHTML=sizes.map((s,k)=>`<button type="button" class="on" onclick="this.classList.toggle('on')"${p.st===0?' disabled':''}>${s}<small>${p.sizes?per[k]+'장':'×'+per[k]}</small></button>`).join('');calc()}
 
 /* kakao */
-const KAKAO_URL='';  // 오픈채팅 1:1 링크 (https://open.kakao.com/o/...) — 받으면 여기에 넣음
+const KAKAO_URL='https://open.kakao.com/o/sbIdZvUi';  // 오픈채팅 1:1 링크 (https://open.kakao.com/o/...) — 받으면 여기에 넣음
 function openKakao(){if(KAKAO_URL){window.open(KAKAO_URL,'_blank');return false}toast('카카오톡 오픈채팅 링크 준비 중입니다');return false}
 /* sheet, toast, copy */
 function openSheet(){document.getElementById('sheet').classList.add('on');document.getElementById('sheet-bg').classList.add('on')}
