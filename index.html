@@ -736,7 +736,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
   </div>
   <form class="form" id="signup" onsubmit="event.preventDefault();doSignup()" novalidate>
    <h3>회원가입</h3>
-   <p class="p" style="font-size:12.5px;margin-top:-4px"><span class="req">*</span> 표시는 모두 필수입니다. 작성 후 카카오톡으로 사업자등록증과 함께 보내주시면 확인 후 승인해 드립니다.</p>
+   <p class="p" style="font-size:12.5px;margin-top:-4px"><span class="req">*</span> 표시는 모두 필수입니다.</p>
    <div class="field"><label for="su-name">이름<span class="req" aria-hidden="true">*</span></label><input id="su-name" class="input" type="text" placeholder="홍길동" autocomplete="name" required><span class="msg" id="su-name-msg">필수 입력 항목입니다</span></div>
    <div class="field"><label for="su-id">아이디<span class="req" aria-hidden="true">*</span></label><input id="su-id" class="input" type="text" placeholder="영문·숫자 4~20자" autocomplete="username" required><span class="msg" id="su-id-msg">필수 입력 항목입니다</span></div>
    <div class="field"><label for="su-pw">비밀번호<span class="req" aria-hidden="true">*</span></label><input id="su-pw" class="input" type="password" placeholder="8자 이상" autocomplete="new-password" required><span class="msg" id="su-pw-msg">필수 입력 항목입니다</span></div>
@@ -919,6 +919,7 @@ async function doSignup(){const g=i=>document.getElementById(i);const v=i=>g(i).
  let code='';try{code=await sha(d.id+':'+d.pw)}catch(e){}
  const t=`[아이템박스 회원가입 신청]\n이름: ${d.name}\n업체명(상호): ${d.co}\n아이디: ${d.id}\n연락처: ${d.tel}\n이메일: ${d.mail}\n주소: ${d.addr}${SIGNUP_API?'':'\n가입코드: '+code}\n※ 사업자등록증 사진 첨부`;
  if(SIGNUP_API){try{const r=await api({action:'signup',name:d.name,id:d.id,code,tel:d.tel,mail:d.mail,co:d.co,addr:d.addr});if(!r.ok){if(r.err==='dup'){bad('su-id','이미 사용 중인 아이디입니다');g('su-id').scrollIntoView({behavior:'smooth',block:'center'});return}toast('접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요');return}}catch(e){toast('접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요');return}}
+ if(SIGNUP_API){g('su-done').innerHTML='<b style="font-size:15px">가입이 완료되었습니다</b><p class="p" style="font-size:12.5px">바로 로그인되었습니다. 다음부터는 입력하신 아이디·비밀번호로 로그인하세요.</p>';g('su-done').hidden=false;g('su-pw').value='';g('su-pw2').value='';try{sessionStorage.setItem('ib_user',d.co)}catch(e){}setMember(true,false);toast(d.co+'님, 가입이 완료되었습니다');setTimeout(()=>go('home'),900);return}
  g('su-text').textContent=t;const box=g('su-done');box.hidden=false;
  g('su-pw').value='';g('su-pw2').value='';
  try{navigator.clipboard.writeText(t).then(()=>toast(SIGNUP_API?'가입 신청이 접수되었습니다':'신청서를 복사했습니다 · 카카오톡에 붙여넣어 주세요')).catch(()=>{})}catch(e){}
@@ -944,7 +945,7 @@ async function doLogin(){const id=document.getElementById('lid').value.trim(),pw
  let h='';try{h=await sha(id+':'+pw)}catch(e){}
  if(id==='itembox_admin'&&h===adminHash()){setMember(true,true);go('home');toast('관리자로 로그인했습니다')}
  else if(h===VIEWER_HASH||MEMBER_HASHES.includes(h)){setMember(true,false);go('home');toast('정회원으로 로그인했습니다')}
- else if(SIGNUP_API){try{const r=await api({action:'login',id,code:h});if(r.ok&&r.status==='approved'){setMember(true,false);go('home');toast((r.co||'정회원')+'님, 로그인했습니다')}else if(r.ok){toast('승인 대기 중입니다 · 사업자등록증을 카카오톡으로 보내주세요')}else toast('아이디 또는 비밀번호가 올바르지 않습니다')}catch(e){toast('로그인 중 오류가 발생했습니다')}}
+ else if(SIGNUP_API){try{const r=await api({action:'login',id,code:h});if(r.ok&&r.status==='approved'){setMember(true,false);go('home');toast((r.co||'정회원')+'님, 로그인했습니다')}else if(r.ok){toast('이용이 제한된 계정입니다 · 카카오톡으로 문의해 주세요')}else toast('아이디 또는 비밀번호가 올바르지 않습니다')}catch(e){toast('로그인 중 오류가 발생했습니다')}}
  else{toast('아이디 또는 비밀번호가 올바르지 않습니다')}}
 try{const a=sessionStorage.getItem('ib_auth');if(a==='admin')setTimeout(()=>setMember(true,true),0);else if(a==='member')setTimeout(()=>setMember(true,false),0);else setMember(false)}catch(e){setMember(false)}
 
