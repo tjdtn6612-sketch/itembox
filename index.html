@@ -653,9 +653,8 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
 <!-- MEMBERS (관리자 전용) -->
 <section class="view" id="v-members">
  <div class="gut" style="display:flex;flex-direction:column;gap:16px;padding-top:22px">
-  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px"><h1 class="h2" style="font-size:28px;display:flex;flex-direction:column;gap:6px"><span class="lbl">Admin</span><span>회원목록</span></h1><button type="button" class="more" onclick="loadMembers()">새로고침</button></div>
-  <div class="mstat"><div><b id="ms-all">0</b><span>전체</span></div><div><b id="ms-wait" style="color:var(--accent)">0</b><span>승인 대기</span></div><div><b id="ms-ok" style="color:#1F9D55">0</b><span>승인</span></div></div>
-  <div class="chips" id="m-filter" style="margin:0;padding:0"><button class="chip sm on" type="button" data-f="all" onclick="mFilter('all')">전체</button><button class="chip sm" type="button" data-f="대기" onclick="mFilter('대기')">승인 대기</button><button class="chip sm" type="button" data-f="승인" onclick="mFilter('승인')">승인</button><button class="chip sm" type="button" data-f="거절" onclick="mFilter('거절')">거절</button></div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px"><h1 class="h2" style="font-size:28px;display:flex;flex-direction:column;gap:6px"><span class="lbl">Admin</span><span>회원목록</span></h1><button type="button" class="more" onclick="loadMembers(true)">새로고침</button></div>
+  <div class="mstat" style="grid-template-columns:1fr 2fr"><div><b id="ms-all">0</b><span>승인된 회원</span></div><div style="justify-content:center"><span style="font-size:12.5px;line-height:1.6;color:var(--ink2)"><b style="font-size:13px;font-family:var(--body);color:var(--ink)">새 회원 승인 방법</b><br>카카오톡으로 받은 가입 신청서를 Claude에게 보내면 승인되어 여기에 추가됩니다.</span></div></div>
   <input class="input" id="m-q" type="search" placeholder="이름 · 업체명 · 아이디 · 연락처 검색" oninput="renderMembers()" aria-label="회원 검색">
   <div id="m-note" class="rulebox" hidden></div>
   <div class="mlist" id="m-list"></div>
@@ -881,21 +880,31 @@ let tx=null;const gal=document.getElementById('gallery');gal.addEventListener('t
 const ADMIN_HASH_DEFAULT='3b9838ba8c774a5a555784f2c2fc8fc8d0f723f43c61379352960990fd0b161c';
 const VIEWER_HASH='46b8951ec59395d206a4e3514bd2012f7bae26d5b8f1e3c823cc4904291ee9d6';
 // 승인된 회원의 가입코드를 여기에 추가합니다 (가입코드 = 신청서의 '가입코드')
-const MEMBER_HASHES=[];
+let MEMDATA={members:[]};
+const MEMP=fetch('members.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(m=>{if(m&&Array.isArray(m.members))MEMDATA=m;return MEMDATA}).catch(()=>MEMDATA);
+const ADMIN_PRIV_DEFAULT=null;let ADMIN_PRIV=null;
+const b64u=x=>Uint8Array.from(atob(x),c=>c.charCodeAt(0));const u8b64=b=>btoa(String.fromCharCode(...new Uint8Array(b)));
+function privBlob(){try{const v=localStorage.getItem('ib_admin_priv');if(v)return JSON.parse(v)}catch(e){}return (MEMDATA.admin&&MEMDATA.admin.priv)||ADMIN_PRIV_DEFAULT}
+async function pwKey(pw,salt){const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:300000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function unlockAdmin(pw){ADMIN_PRIV=null;try{const b=privBlob();if(!b)return;const k=await pwKey(pw,b64u(b.s));const der=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64u(b.i)},k,b64u(b.d));ADMIN_PRIV=await crypto.subtle.importKey('pkcs8',der,{name:'RSA-OAEP',hash:'SHA-256'},true,['decrypt']);try{sessionStorage.setItem('ib_priv',u8b64(der))}catch(e){}}catch(e){ADMIN_PRIV=null}}
+async function restorePriv(){try{const v=sessionStorage.getItem('ib_priv');if(v&&!ADMIN_PRIV)ADMIN_PRIV=await crypto.subtle.importKey('pkcs8',b64u(v),{name:'RSA-OAEP',hash:'SHA-256'},true,['decrypt'])}catch(e){}}
+async function decryptMembers(){const out=[];for(const e of MEMDATA.members){try{const k=await crypto.subtle.decrypt({name:'RSA-OAEP'},ADMIN_PRIV,b64u(e.k));const ak=await crypto.subtle.importKey('raw',k,'AES-GCM',false,['decrypt']);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64u(e.i)},ak,b64u(e.d));out.push(JSON.parse(new TextDecoder().decode(pt)))}catch(x){}}return out}
 // 회원 저장소 (구글 시트 Apps Script 웹앱 주소) — 연결 전에는 비워둡니다
 const SIGNUP_API='';
 async function api(o){const r=await fetch(SIGNUP_API,{method:'POST',body:JSON.stringify(o)});return r.json()}
-function adminHash(){try{return localStorage.getItem('ib_admin_hash')||ADMIN_HASH_DEFAULT}catch(e){return ADMIN_HASH_DEFAULT}}
+function adminHash(){const d=(MEMDATA.admin&&MEMDATA.admin.hash)||ADMIN_HASH_DEFAULT;try{return localStorage.getItem('ib_admin_hash')||d}catch(e){return d}}
 async function changePw(){const cur=document.getElementById('pw-cur').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value;
  if(!cur||!n1){toast('현재 비밀번호와 새 비밀번호를 입력하세요');return}
  if(n1.length<8){toast('새 비밀번호는 8자 이상으로 해주세요');return}
  if(n1!==n2){toast('새 비밀번호 확인이 일치하지 않습니다');return}
  if(await sha('itembox_admin:'+cur)!==adminHash()){toast('현재 비밀번호가 올바르지 않습니다');return}
- const h=await sha('itembox_admin:'+n1);try{localStorage.setItem('ib_admin_hash',h)}catch(e){toast('이 브라우저에서는 저장할 수 없습니다');return}
+ const h=await sha('itembox_admin:'+n1);await restorePriv();if(!ADMIN_PRIV)await unlockAdmin(cur);let pb=null;
+ try{if(ADMIN_PRIV){const der=await crypto.subtle.exportKey('pkcs8',ADMIN_PRIV);const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const k=await pwKey(n1,salt);const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,der);pb={s:u8b64(salt),i:u8b64(iv),d:u8b64(ct)}}}catch(e){}
+ try{localStorage.setItem('ib_admin_hash',h);if(pb)localStorage.setItem('ib_admin_priv',JSON.stringify(pb))}catch(e){toast('이 브라우저에서는 저장할 수 없습니다');return}
  document.getElementById('pw-cur').value=document.getElementById('pw-new').value=document.getElementById('pw-new2').value='';
- document.getElementById('pw-code').textContent=h;document.getElementById('pw-done').hidden=false;toast('비밀번호를 변경했습니다')}
+ document.getElementById('pw-code').textContent=pb?JSON.stringify({h,p:pb}):h;document.getElementById('pw-done').hidden=false;toast('비밀번호를 변경했습니다')}
 let isAdmin=false;
-function setMember(on,admin){isAdmin=!!admin;document.body.classList.toggle('member',on);document.querySelectorAll('.guest').forEach(el=>el.hidden=on);document.querySelectorAll('.mem').forEach(el=>el.hidden=!on);document.querySelectorAll('.memchip').forEach(c=>{const t=c.childNodes[c.childNodes.length-1];if(t&&t.nodeType===3)t.textContent=admin?'관리자':'정회원'});document.querySelectorAll('.adm').forEach(el=>el.hidden=!admin);const mt=document.getElementById('my-title');if(mt)mt.textContent=admin?'아이템박스 관리자':'소매점 회원 (보기용)';const mi=document.getElementById('my-id');if(mi)mi.textContent=admin?'itembox_admin':'abcd1';
+function setMember(on,admin){isAdmin=!!admin;if(!admin){ADMIN_PRIV=null;try{sessionStorage.removeItem('ib_priv')}catch(e){}}document.body.classList.toggle('member',on);document.querySelectorAll('.guest').forEach(el=>el.hidden=on);document.querySelectorAll('.mem').forEach(el=>el.hidden=!on);document.querySelectorAll('.memchip').forEach(c=>{const t=c.childNodes[c.childNodes.length-1];if(t&&t.nodeType===3)t.textContent=admin?'관리자':'정회원'});document.querySelectorAll('.adm').forEach(el=>el.hidden=!admin);const mt=document.getElementById('my-title');if(mt)mt.textContent=admin?'아이템박스 관리자':'소매점 회원 (보기용)';const mi=document.getElementById('my-id');if(mi)mi.textContent=admin?'itembox_admin':'abcd1';
  // re-render product grids so price rows reflect the mode
  if(typeof goCat==='function'&&typeof pick==='function'){document.getElementById('home-grid').innerHTML=[P[0],P[2],...pick('뷰티',1),P[12]].map(p=>card(p)).join('');goCat(curCat,curSub,true)}
  try{if(on)sessionStorage.setItem('ib_auth',admin?'admin':'member');else sessionStorage.removeItem('ib_auth')}catch(e){}}
@@ -926,25 +935,23 @@ async function doSignup(){const g=i=>document.getElementById(i);const v=i=>g(i).
  box.scrollIntoView({behavior:'smooth',block:'center'})}
 document.addEventListener('input',e=>{const f=e.target.closest&&e.target.closest('#signup .field.err');if(f&&e.target.value.trim())f.classList.remove('err')});
 document.addEventListener('change',e=>{if(e.target.closest&&e.target.closest('#su-consent')&&['agree-terms','agree-privacy','agree-policy','agree-age'].every(i=>document.getElementById(i).checked))document.getElementById('su-consent').classList.remove('err')});
-let MEMBERS=[],mF='all';
+let MEMBERS=[];
 function openMembers(){if(!isAdmin){toast('관리자만 볼 수 있습니다');return}go('members');loadMembers()}
-async function loadMembers(){const note=document.getElementById('m-note');
- if(!SIGNUP_API){note.hidden=false;note.innerHTML='<b>회원 저장소가 아직 연결되지 않았습니다</b>구글 시트 연결이 끝나면 홈페이지에서 가입한 회원이 여기에 자동으로 표시됩니다.';MEMBERS=[];renderMembers();return}
- note.hidden=false;note.innerHTML='불러오는 중…';
- try{const r=await api({action:'list',key:adminHash()});if(!r.ok){note.innerHTML='<b>불러오지 못했습니다</b>'+(r.err==='auth'?'관리자 인증이 맞지 않습니다. 비밀번호를 변경했다면 시트 스크립트의 ADMIN_KEY도 바꿔야 합니다.':'잠시 후 다시 시도해 주세요.');return}MEMBERS=(r.rows||[]).reverse();note.hidden=true;renderMembers()}catch(e){note.innerHTML='<b>불러오지 못했습니다</b>인터넷 연결을 확인하고 새로고침을 눌러 주세요.'}}
-function mFilter(f){mF=f;document.querySelectorAll('#m-filter .chip').forEach(b=>b.classList.toggle('on',b.dataset.f===f));renderMembers()}
+async function loadMembers(fresh){const note=document.getElementById('m-note');note.hidden=false;note.innerHTML='불러오는 중…';
+ try{if(fresh){const r=await fetch('members.json?'+Date.now(),{cache:'no-store'});if(r.ok){const m=await r.json();if(m&&Array.isArray(m.members))MEMDATA=m}}else await MEMP}catch(e){}
+ await restorePriv();
+ if(!ADMIN_PRIV){note.innerHTML='<b>회원 정보를 열 수 없습니다</b>로그아웃 후 관리자 비밀번호로 다시 로그인해 주세요.';MEMBERS=[];renderMembers();return}
+ MEMBERS=(await decryptMembers()).reverse();note.hidden=true;renderMembers()}
 function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function renderMembers(){const q=(document.getElementById('m-q').value||'').trim().toLowerCase();
- document.getElementById('ms-all').textContent=MEMBERS.length;document.getElementById('ms-wait').textContent=MEMBERS.filter(m=>m.status==='대기').length;document.getElementById('ms-ok').textContent=MEMBERS.filter(m=>m.status==='승인').length;
- const L=MEMBERS.filter(m=>(mF==='all'||m.status===mF)&&(!q||[m.name,m.co,m.id,m.tel,m.mail].join(' ').toLowerCase().includes(q)));
- const st=m=>m.status==='승인'?'ok':m.status==='대기'?'wait':'no';
- const dt=a=>{const x=new Date(a);return isNaN(x)?esc(a):x.getFullYear()+'.'+String(x.getMonth()+1).padStart(2,'0')+'.'+String(x.getDate()).padStart(2,'0')+' '+String(x.getHours()).padStart(2,'0')+':'+String(x.getMinutes()).padStart(2,'0')};
- document.getElementById('m-list').innerHTML=L.length?L.map(m=>`<div class="mrow"><div><b>${esc(m.name)}</b><br><span class="num" style="font-size:11.5px;color:var(--mute)">${dt(m.at)}</span></div><div><b style="font-size:13.5px">${esc(m.co)}</b><br>ID ${esc(m.id)}</div><div>${esc(m.tel)}<br>${esc(m.mail)}</div><div style="font-size:12.5px">${esc(m.addr)}</div><span class="st ${st(m)}">${esc(m.status||'대기')}</span><div class="acts">${m.status!=='승인'?`<button type="button" class="go" onclick="setMStatus('${esc(m.id)}','승인')">승인</button>`:''}${m.status!=='거절'?`<button type="button" onclick="setMStatus('${esc(m.id)}','거절')">${m.status==='승인'?'승인 취소':'거절'}</button>`:`<button type="button" onclick="setMStatus('${esc(m.id)}','대기')">대기로</button>`}</div></div>`).join(''):'<p class="p" style="padding:24px 0;text-align:center">표시할 회원이 없습니다</p>'}
-async function setMStatus(id,status){try{const r=await api({action:'status',key:adminHash(),id,status});if(r.ok){const m=MEMBERS.find(x=>x.id===id);if(m)m.status=status;renderMembers();toast(status==='승인'?'승인했습니다':'변경했습니다')}else toast('변경하지 못했습니다')}catch(e){toast('변경하지 못했습니다')}}
+ document.getElementById('ms-all').textContent=MEMBERS.length;
+ const L=MEMBERS.filter(m=>!q||[m.name,m.co,m.id,m.tel,m.mail,m.addr].join(' ').toLowerCase().includes(q));
+ document.getElementById('m-list').innerHTML=L.length?L.map(m=>`<div class="mrow"><div><b>${esc(m.name)}</b><br><span class="num" style="font-size:11.5px;color:var(--mute)">승인 ${esc(m.at)}</span></div><div><b style="font-size:13.5px">${esc(m.co)}</b><br>ID ${esc(m.id)}</div><div><a href="tel:${esc(m.tel)}">${esc(m.tel)}</a><br>${esc(m.mail)}</div><div style="font-size:12.5px">${esc(m.addr)}</div><span class="st ok">승인</span></div>`).join(''):'<p class="p" style="padding:24px 0;text-align:center">'+(MEMBERS.length?'검색 결과가 없습니다':'아직 승인된 회원이 없습니다')+'</p>'}
 async function doLogin(){const id=document.getElementById('lid').value.trim(),pw=document.getElementById('lpw').value;if(!id||!pw){toast('아이디와 비밀번호를 입력하세요');return}
  let h='';try{h=await sha(id+':'+pw)}catch(e){}
- if(id==='itembox_admin'&&h===adminHash()){setMember(true,true);go('home');toast('관리자로 로그인했습니다')}
- else if(h===VIEWER_HASH||MEMBER_HASHES.includes(h)){setMember(true,false);go('home');toast('정회원으로 로그인했습니다')}
+ await MEMP;
+ if(id==='itembox_admin'&&h===adminHash()){await unlockAdmin(pw);setMember(true,true);go('home');toast('관리자로 로그인했습니다')}
+ else if(h===VIEWER_HASH||MEMDATA.members.some(x=>x.c===h)){setMember(true,false);go('home');toast('정회원으로 로그인했습니다')}
  else if(SIGNUP_API){try{const r=await api({action:'login',id,code:h});if(r.ok&&r.status==='approved'){setMember(true,false);go('home');toast((r.co||'정회원')+'님, 로그인했습니다')}else if(r.ok){toast('이용이 제한된 계정입니다 · 카카오톡으로 문의해 주세요')}else toast('아이디 또는 비밀번호가 올바르지 않습니다')}catch(e){toast('로그인 중 오류가 발생했습니다')}}
  else{toast('아이디 또는 비밀번호가 올바르지 않습니다')}}
 try{const a=sessionStorage.getItem('ib_auth');if(a==='admin')setTimeout(()=>setMember(true,true),0);else if(a==='member')setTimeout(()=>setMember(true,false),0);else setMember(false)}catch(e){setMember(false)}
