@@ -267,6 +267,32 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
 .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:4px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .3s;z-index:40;white-space:nowrap}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
+/* signup required fields */
+.req{color:#E5484D;margin-left:3px;font-family:var(--body)}
+.field .msg{display:none;font-size:11.5px;font-weight:600;color:#E5484D;margin-top:-2px}
+.field.err .msg{display:block}
+.field.err .input{border-color:#E5484D;box-shadow:0 0 0 3px rgba(229,72,77,.12);background:#fff}
+.consent .msg{display:none;font-size:11.5px;font-weight:600;color:#E5484D}
+.consent.err .msg{display:block}
+.consent.err label:not(:first-child) input:not(:checked)+span{color:#E5484D}
+/* admin: members */
+.hbtn{height:34px;padding:0 12px;border-radius:999px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.hbtn:active{transform:scale(.97)}
+.memchip{white-space:nowrap}
+@media (max-width:1023px){.hbtn:not([hidden])~.memchip{display:none}}
+.mlist{display:flex;flex-direction:column;border-top:1px solid var(--line2)}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.55;color:var(--ink2)}
+.mrow b{color:var(--ink);font-size:15px}
+.mrow .st{font-family:var(--disp);font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px;align-self:start;justify-self:end}
+.mrow .st.ok{background:#E6F6EC;color:#1F9D55}.mrow .st.wait{background:var(--accent-soft);color:var(--accent)}.mrow .st.no{background:var(--line);color:var(--ink2)}
+.mrow .acts{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}
+.mrow .acts button{height:34px;padding:0 14px;border-radius:4px;font-size:12.5px;font-weight:700;box-shadow:inset 0 0 0 1px var(--line);background:var(--paper)}
+.mrow .acts button.go{background:var(--ink);color:#fff;box-shadow:none}
+.mstat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mstat div{background:var(--paper);box-shadow:inset 0 0 0 1px var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.mstat b{font-family:var(--disp);font-size:22px;letter-spacing:-.03em}
+.mstat span{font-size:11.5px;color:var(--mute)}
+
 /* nav */
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--paper);border-top:1px solid var(--line);padding:6px var(--gut-r) calc(6px + env(safe-area-inset-bottom,0px)) var(--gut-l)}
 .nav .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
@@ -379,6 +405,9 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
   .sheet .grab{display:none}
   .toast{bottom:40px}
   .btn:hover{filter:brightness(.92)}
+  .mrow{grid-template-columns:150px 1.2fr 1.4fr 1fr auto auto;align-items:center;gap:12px}
+  .mrow .acts{grid-column:auto;flex-wrap:nowrap}
+  #v-members>.gut{max-width:1200px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv.pre{opacity:1;transform:none}.h1 .w span{transform:none}}
 </style>
@@ -392,6 +421,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
  <div class="gut row">
   <a href="#home" class="logo" onclick="go('home');return false">ITEM<em>BOX</em></a>
   <div style="display:flex;gap:6px;align-items:center">
+   <button class="hbtn adm" type="button" hidden onclick="openMembers()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2.2.6 3.5 2.6 3.5 6"/></svg>회원목록</button>
    <span class="memchip mem"><i></i>정회원</span>
    <button class="ibtn" type="button" aria-label="검색" onclick="goCat('전체')"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
    <button class="ibtn" type="button" aria-label="알림" onclick="toast('공지 4건')"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></svg><span class="dot"></span></button>
@@ -601,7 +631,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
 </div></div></section>
 <section class="view legal" id="v-privacy"><div class="gut" style="padding-top:22px"><button type="button" class="more" onclick="go('home')">← 홈</button><h1 class="h2" style="font-size:26px;margin:16px 0 8px">개인정보처리방침</h1><div class="legal-body">
 <p>제이유앤물류(이하 "회사")은 「개인정보 보호법」에 따라 이용자의 개인정보를 보호하고 이와 관련한 고충을 신속하게 처리하기 위하여 다음과 같이 개인정보처리방침을 수립·공개합니다.</p>
-<h2>1. 수집하는 개인정보 항목 및 수집 방법</h2><p>① 회원가입 시: 아이디, 비밀번호, 이름(상호), 연락처, 회원 구분<br>② 정회원 승인 시: 사업자등록증 사본(상호, 대표자명, 사업자등록번호, 사업장 주소), 판매 채널 정보, 세금계산서 발행용 이메일<br>③ 주문·거래 시: 배송지 주소, 입금자명<br>④ 서비스 이용 과정에서 접속 IP, 접속 일시, 기기 정보가 자동으로 생성·수집될 수 있습니다.<br>⑤ 수집 방법: 홈페이지 회원가입 양식, 카카오톡 오픈채팅을 통한 서류 제출, 전화·이메일</p>
+<h2>1. 수집하는 개인정보 항목 및 수집 방법</h2><p>① 회원가입 시: 이름, 아이디, 비밀번호, 연락처, 이메일, 업체명(상호), 주소<br>② 정회원 승인 시: 사업자등록증 사본(상호, 대표자명, 사업자등록번호, 사업장 주소), 판매 채널 정보, 세금계산서 발행용 이메일<br>③ 주문·거래 시: 배송지 주소, 입금자명<br>④ 서비스 이용 과정에서 접속 IP, 접속 일시, 기기 정보가 자동으로 생성·수집될 수 있습니다.<br>⑤ 수집 방법: 홈페이지 회원가입 양식, 카카오톡 오픈채팅을 통한 서류 제출, 전화·이메일</p>
 <h2>2. 개인정보의 수집 및 이용 목적</h2><p>① 회원 관리: 회원제 서비스 제공, 본인 확인, 사업자·셀러 인증 및 승인, 부정 이용 방지<br>② 거래 이행: 견적·주문 접수, 대금 결제 확인, 상품 배송, 세금계산서 발행<br>③ 고객 응대: 문의·불만 처리, 공지사항 전달<br>④ 법령상 의무 이행: 전자상거래법·세법 등에 따른 거래 기록 보관</p>
 <h2>3. 개인정보의 보유 및 이용 기간</h2><p>① 회원 탈퇴 시 지체 없이 파기합니다. 다만 다음의 경우 명시한 기간 동안 보관합니다.<br>② 전자상거래법: 계약 또는 청약철회 등에 관한 기록 5년, 대금결제 및 재화 공급에 관한 기록 5년, 소비자 불만 또는 분쟁 처리에 관한 기록 3년<br>③ 통신비밀보호법: 접속 기록 3개월<br>④ 국세기본법·부가가치세법: 세금계산서 등 거래 증빙 5년</p>
 <h2>4. 개인정보의 제3자 제공</h2><p>회사는 이용자의 개인정보를 제2조에서 고지한 범위 내에서만 이용하며, 이용자의 사전 동의 없이 제3자에게 제공하지 않습니다. 다만 법령에 특별한 규정이 있는 경우는 예외로 합니다.</p>
@@ -619,6 +649,18 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
 <h2>환불 방법</h2><p>환불은 입금 계좌로 반품 상품 확인 후 <b>[3]영업일 이내</b> 처리됩니다. 세금계산서가 발행된 경우 수정세금계산서를 발행합니다.</p>
 <h2>반품 주소</h2><p>전북특별자치도 전주시 덕진구 오공로 43-34, 603호 · 담당 박준호 · 010-2433-0854<br>반품 전 반드시 사전 연락 후 보내주세요. 사전 연락 없는 반품은 처리가 지연될 수 있습니다.</p>
 </div></div></section>
+
+<!-- MEMBERS (관리자 전용) -->
+<section class="view" id="v-members">
+ <div class="gut" style="display:flex;flex-direction:column;gap:16px;padding-top:22px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px"><h1 class="h2" style="font-size:28px;display:flex;flex-direction:column;gap:6px"><span class="lbl">Admin</span><span>회원목록</span></h1><button type="button" class="more" onclick="loadMembers()">새로고침</button></div>
+  <div class="mstat"><div><b id="ms-all">0</b><span>전체</span></div><div><b id="ms-wait" style="color:var(--accent)">0</b><span>승인 대기</span></div><div><b id="ms-ok" style="color:#1F9D55">0</b><span>승인</span></div></div>
+  <div class="chips" id="m-filter" style="margin:0;padding:0"><button class="chip sm on" type="button" data-f="all" onclick="mFilter('all')">전체</button><button class="chip sm" type="button" data-f="대기" onclick="mFilter('대기')">승인 대기</button><button class="chip sm" type="button" data-f="승인" onclick="mFilter('승인')">승인</button><button class="chip sm" type="button" data-f="거절" onclick="mFilter('거절')">거절</button></div>
+  <input class="input" id="m-q" type="search" placeholder="이름 · 업체명 · 아이디 · 연락처 검색" oninput="renderMembers()" aria-label="회원 검색">
+  <div id="m-note" class="rulebox" hidden></div>
+  <div class="mlist" id="m-list"></div>
+ </div>
+</section>
 
 <!-- VERIFY -->
 <section class="view" id="v-verify">
@@ -664,6 +706,7 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
    <button type="submit" class="btn btn-ink">로그인</button>
    <div style="display:flex;justify-content:center;gap:14px;font-size:12px;color:var(--mute)"><a href="#verify">아이디 찾기</a><a href="#verify">비밀번호 찾기</a></div>
    <div style="font-size:11.5px;color:var(--mute);text-align:center">승인 전 회원은 로그인해도 가격이 보이지 않습니다.</div>
+   <button type="button" class="btn btn-line" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth',block:'start'})">아직 회원이 아니신가요? 회원가입</button>
   </form>
   <div><div class="sec-head" style="border-bottom:0;padding-bottom:10px"><h2 class="h2" style="font-size:18px"><span class="lbl">Process</span><span>인증 3단계</span></h2></div>
    <div class="steps">
@@ -691,19 +734,32 @@ footer{padding-top:34px;padding-bottom:16px;color:var(--mute);font-size:11px;lin
     <details><summary>샘플</summary><p>정회원은 샘플을 수령할 수 있습니다. 문의 시 요청해 주시면 발송해 드립니다.</p></details>
    </div>
   </div>
-  <form class="form" onsubmit="event.preventDefault();if(!['agree-terms','agree-privacy','agree-policy','agree-age'].every(i=>document.getElementById(i).checked)){toast('필수 항목에 모두 동의해 주세요');return}toast('가입 신청이 접수되었습니다 (데모)')">
+  <form class="form" id="signup" onsubmit="event.preventDefault();doSignup()" novalidate>
    <h3>회원가입</h3>
-   <div class="field"><label for="sid">ID</label><input id="sid" class="input" type="text" placeholder="영문·숫자 4자 이상" autocomplete="username"></div>
-   <div class="field"><label for="sname">Name / Company</label><input id="sname" class="input" type="text" placeholder="홍길동 / 제이유앤물류"></div>
-   <div class="field"><label for="stel">Phone</label><input id="stel" class="input" type="tel" placeholder="010-0000-0000"></div>
-   <div class="field"><label for="stype">Type</label><select id="stype" class="input"><option>소매점 (매장)</option><option>도매 · 유통</option><option>온라인 셀러</option><option>제조사</option><option>해외 바이어</option></select></div>
-   <div class="consent">
+   <p class="p" style="font-size:12.5px;margin-top:-4px"><span class="req">*</span> 표시는 모두 필수입니다. 작성 후 카카오톡으로 사업자등록증과 함께 보내주시면 확인 후 승인해 드립니다.</p>
+   <div class="field"><label for="su-name">이름<span class="req" aria-hidden="true">*</span></label><input id="su-name" class="input" type="text" placeholder="홍길동" autocomplete="name" required><span class="msg" id="su-name-msg">필수 입력 항목입니다</span></div>
+   <div class="field"><label for="su-id">아이디<span class="req" aria-hidden="true">*</span></label><input id="su-id" class="input" type="text" placeholder="영문·숫자 4~20자" autocomplete="username" required><span class="msg" id="su-id-msg">필수 입력 항목입니다</span></div>
+   <div class="field"><label for="su-pw">비밀번호<span class="req" aria-hidden="true">*</span></label><input id="su-pw" class="input" type="password" placeholder="8자 이상" autocomplete="new-password" required><span class="msg" id="su-pw-msg">필수 입력 항목입니다</span></div>
+   <div class="field"><label for="su-pw2">비밀번호 확인<span class="req" aria-hidden="true">*</span></label><input id="su-pw2" class="input" type="password" placeholder="비밀번호 다시 입력" autocomplete="new-password" required><span class="msg" id="su-pw2-msg">필수 입력 항목입니다</span></div>
+   <div class="field"><label for="su-tel">연락처<span class="req" aria-hidden="true">*</span></label><input id="su-tel" class="input" type="tel" placeholder="010-0000-0000" autocomplete="tel" required><span class="msg" id="su-tel-msg">필수 입력 항목입니다</span></div>
+   <div class="field"><label for="su-mail">이메일<span class="req" aria-hidden="true">*</span></label><input id="su-mail" class="input" type="email" placeholder="name@example.com" autocomplete="email" required><span class="msg" id="su-mail-msg">필수 입력 항목입니다</span></div>
+   <div class="field"><label for="su-co">업체명 (상호)<span class="req" aria-hidden="true">*</span></label><input id="su-co" class="input" type="text" placeholder="사업자등록증상의 상호" autocomplete="organization" required><span class="msg" id="su-co-msg">필수 입력 항목입니다</span></div>
+   <div class="field"><label for="su-addr">주소<span class="req" aria-hidden="true">*</span></label><input id="su-addr" class="input" type="text" placeholder="사업장 주소" autocomplete="street-address" required><span class="msg" id="su-addr-msg">필수 입력 항목입니다</span></div>
+   <div class="consent" id="su-consent">
+    <label><input type="checkbox" id="agree-all" onchange="['agree-terms','agree-privacy','agree-policy','agree-age'].forEach(i=>document.getElementById(i).checked=this.checked)"><span><b style="color:var(--ink)">전체 동의</b></span></label>
     <label><input type="checkbox" id="agree-terms"><span><b style="color:var(--ink)">[필수]</b> <a href="#terms" onclick="go('terms');return false">이용약관</a>에 동의합니다.</span></label>
-    <label><input type="checkbox" id="agree-privacy"><span><b style="color:var(--ink)">[필수]</b> <a href="#privacy" onclick="go('privacy');return false">개인정보 수집·이용</a>에 동의합니다. (아이디, 이름/상호, 연락처, 사업자등록증 — 회원 관리 및 거래 이행 목적, 탈퇴 시 파기)</span></label>
+    <label><input type="checkbox" id="agree-privacy"><span><b style="color:var(--ink)">[필수]</b> <a href="#privacy" onclick="go('privacy');return false">개인정보 수집·이용</a>에 동의합니다. (이름, 아이디, 비밀번호, 연락처, 이메일, 업체명, 주소, 사업자등록증 — 회원 관리 및 거래 이행 목적, 탈퇴 시 파기)</span></label>
     <label><input type="checkbox" id="agree-policy"><span><b style="color:var(--ink)">[필수]</b> 사업자·셀러 인증 후 가격이 공개되며, 최저가 준수·판매처 등록 정책에 동의합니다.</span></label>
     <label><input type="checkbox" id="agree-age"><span><b style="color:var(--ink)">[필수]</b> 만 14세 이상입니다.</span></label>
+    <span class="msg">필수 항목에 모두 동의해 주세요</span>
    </div>
-   <button type="submit" class="btn btn-acc">가입하고 인증 신청하기</button>
+   <button type="submit" class="btn btn-acc">가입 신청하기</button>
+   <div id="su-done" hidden style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px">
+    <b style="font-size:15px">신청서가 작성되었습니다</b>
+    <p class="p" style="font-size:12.5px">아래 내용을 복사해 <b style="color:var(--ink)">사업자등록증 사진과 함께</b> 카카오톡으로 보내주세요. 확인 후 승인되면 입력하신 아이디·비밀번호로 로그인할 수 있습니다. 비밀번호는 신청서에 들어가지 않습니다.</p>
+    <pre id="su-text" style="margin:0;white-space:pre-wrap;word-break:break-all;font-family:var(--body);font-size:12.5px;line-height:1.7;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:12px"></pre>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" class="btn btn-line" onclick="copyText('su-text')">신청서 복사</button><a class="btn btn-kakao" href="#kakao" onclick="return openKakao()">카카오톡으로 보내기</a></div>
+   </div>
   </form>
   <footer><div class="footlinks"><a href="#terms" onclick="go('terms');return false">이용약관</a><a href="#privacy" onclick="go('privacy');return false"><b>개인정보처리방침</b></a><a href="#returns" onclick="go('returns');return false">청약철회·반품</a></div><div class="logo" style="font-size:16px">ITEM<em>BOX</em></div><div class="biz"><b>상호</b> 제이유앤물류 · <b>대표</b> 박준호 · <b>사업자등록번호</b> 643-81-03894 · <b>통신판매업신고</b> 처리중<br><b>주소</b> 전북특별자치도 전주시 덕진구 오공로 43-34, 603호 · <b>전화</b> 010-2433-0854 · <b>이메일</b> qkrwnsgh13@gmail.com<br>© 2026 아이템박스</div></footer>
  </div>
@@ -786,7 +842,7 @@ document.querySelectorAll('.rv').forEach(el=>{if(el.getBoundingClientRect().top>
 const steps=[...document.querySelectorAll('#steps .step')];let si=0;setInterval(()=>{steps.forEach(s=>s.classList.remove('active'));si=(si+1)%steps.length;steps[si].classList.add('active')},2200);
 
 /* views */
-const views={home:'v-home',list:'v-list',detail:'v-detail',verify:'v-verify',notice:'v-notice',terms:'v-terms',privacy:'v-privacy',returns:'v-returns'};
+const views={home:'v-home',list:'v-list',detail:'v-detail',verify:'v-verify',notice:'v-notice',terms:'v-terms',privacy:'v-privacy',returns:'v-returns',members:'v-members'};
 const NOTICES=[
  {d:'2026-10-27',pin:true,t:'회원가입 이후 사업자·셀러 인증 후 이용이 가능합니다',b:'아이템박스는 제조사·도매·소매·셀러를 위한 폐쇄몰입니다. 회원가입 후 사업자등록증 사본과 가입 아이디·이름을 카카오톡 오픈채팅으로 보내주시면 접수 순서대로 승인해 드립니다. 승인 전에는 판매가와 재고가 표시되지 않습니다. 전화로는 승인 요청을 받지 않습니다.'},
  {d:'2026-10-27',t:'아이템박스 오픈 안내',b:'아이템박스 사이트를 오픈했습니다. 현재 신발·뷰티·의류·잡화·브랜드 카테고리의 상품을 확인하실 수 있으며, 상품은 계속 추가됩니다. 가격·재고 문의와 샘플 요청은 카카오톡 오픈채팅으로 남겨주세요.'},
@@ -807,7 +863,7 @@ function renderNotices(){const sorted=NOTICES.slice().sort((a,b)=>(b.pin?1:0)-(a
 renderNotices();
 function go(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));const el=document.getElementById(views[v]);void el.offsetWidth;el.classList.add('on');document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v||(v==='detail'&&a.dataset.v==='list')||(v==='verify'&&a.dataset.v==='my')));document.querySelectorAll('#toptabs button').forEach((b,k)=>b.classList.toggle('on',(v==='home'&&k===0)||(v==='verify'&&b.textContent==='이용안내')||((v==='list'||v==='detail')&&b.textContent===curCat)));window.scrollTo({top:0,behavior:'instant'});topEl.classList.remove('shrink');try{history.replaceState(null,'','#'+v)}catch(e){}}
 document.querySelectorAll('.nav a[data-v]').forEach(a=>{if(['home','list','verify','my'].includes(a.dataset.v))a.addEventListener('click',e=>{e.preventDefault();if(a.dataset.v==='list')goCat('전체');else go(a.dataset.v==='my'?'verify':a.dataset.v)})});
-const h=(location.hash||'').replace('#','');if(views[h])go(h);
+const h=(location.hash||'').replace('#','');if(views[h]&&h!=='members')go(h);
 
 /* detail */
 let slide=0,slideTimer,NS=3;
@@ -824,6 +880,11 @@ let tx=null;const gal=document.getElementById('gallery');gal.addEventListener('t
 /* member / admin mode */
 const ADMIN_HASH_DEFAULT='3b9838ba8c774a5a555784f2c2fc8fc8d0f723f43c61379352960990fd0b161c';
 const VIEWER_HASH='46b8951ec59395d206a4e3514bd2012f7bae26d5b8f1e3c823cc4904291ee9d6';
+// 승인된 회원의 가입코드를 여기에 추가합니다 (가입코드 = 신청서의 '가입코드')
+const MEMBER_HASHES=[];
+// 회원 저장소 (구글 시트 Apps Script 웹앱 주소) — 연결 전에는 비워둡니다
+const SIGNUP_API='';
+async function api(o){const r=await fetch(SIGNUP_API,{method:'POST',body:JSON.stringify(o)});return r.json()}
 function adminHash(){try{return localStorage.getItem('ib_admin_hash')||ADMIN_HASH_DEFAULT}catch(e){return ADMIN_HASH_DEFAULT}}
 async function changePw(){const cur=document.getElementById('pw-cur').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value;
  if(!cur||!n1){toast('현재 비밀번호와 새 비밀번호를 입력하세요');return}
@@ -840,10 +901,50 @@ function setMember(on,admin){isAdmin=!!admin;document.body.classList.toggle('mem
  try{if(on)sessionStorage.setItem('ib_auth',admin?'admin':'member');else sessionStorage.removeItem('ib_auth')}catch(e){}}
 function sha256js(ascii){function R(v,a){return(v>>>a)|(v<<(32-a))}const M=Math.pow,maxWord=M(2,32);let result='',words=[],asciiBitLength=ascii.length*8,hash=[],k=[],primeCounter=0,isComposite={};for(let c=2;primeCounter<64;c++){if(!isComposite[c]){for(let i=0;i<313;i+=c)isComposite[i]=c;hash[primeCounter]=(M(c,.5)*maxWord)|0;k[primeCounter++]=(M(c,1/3)*maxWord)|0}}ascii+='\x80';while(ascii.length%64-56)ascii+='\x00';for(let i=0;i<ascii.length;i++){const j=ascii.charCodeAt(i);if(j>>8)return;words[i>>2]|=j<<((3-i)%4)*8}words[words.length]=(asciiBitLength/maxWord)|0;words[words.length]=asciiBitLength;for(let j=0;j<words.length;){const w=words.slice(j,j+=16),oldHash=hash;hash=hash.slice(0,8);for(let i=0;i<64;i++){const w15=w[i-15],w2=w[i-2],a=hash[0],e=hash[4],temp1=hash[7]+(R(e,6)^R(e,11)^R(e,25))+((e&hash[5])^(~e&hash[6]))+k[i]+(w[i]=i<16?w[i]:(w[i-16]+(R(w15,7)^R(w15,18)^(w15>>>3))+w[i-7]+(R(w2,17)^R(w2,19)^(w2>>>10)))|0),temp2=(R(a,2)^R(a,13)^R(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));hash=[(temp1+temp2)|0].concat(hash);hash[4]=(hash[4]+temp1)|0}for(let i=0;i<8;i++)hash[i]=(hash[i]+oldHash[i])|0}for(let i=0;i<8;i++)for(let j=3;j+1;j--){const b=(hash[i]>>(j*8))&255;result+=((b>>4).toString(16))+((b&15).toString(16))}return result}
 async function sha(t){try{if(crypto&&crypto.subtle){const b=new TextEncoder().encode(t);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}}catch(e){}const u=unescape(encodeURIComponent(t));return sha256js(u)}
+async function doSignup(){const g=i=>document.getElementById(i);const v=i=>g(i).value.trim();
+ const req=['su-name','su-id','su-pw','su-pw2','su-tel','su-mail','su-co','su-addr'];
+ const bad=(id,msg)=>{const f=g(id).closest('.field');f.classList.add('err');g(id+'-msg').textContent=msg||'필수 입력 항목입니다';};
+ req.forEach(id=>{g(id).closest('.field').classList.remove('err')});g('su-consent').classList.remove('err');
+ req.forEach(id=>{if(!g(id).value.trim())bad(id)});
+ const d={name:v('su-name'),id:v('su-id'),pw:g('su-pw').value,pw2:g('su-pw2').value,tel:v('su-tel'),mail:v('su-mail'),co:v('su-co'),addr:v('su-addr')};
+ if(d.id&&!/^[A-Za-z0-9_]{4,20}$/.test(d.id))bad('su-id','영문·숫자 4~20자로 입력해 주세요');
+ if(d.id==='itembox_admin'||d.id==='abcd1')bad('su-id','사용할 수 없는 아이디입니다');
+ if(d.pw&&d.pw.length<8)bad('su-pw','8자 이상으로 입력해 주세요');
+ if(d.pw2&&d.pw!==d.pw2)bad('su-pw2','비밀번호가 일치하지 않습니다');
+ if(d.tel&&!/^[0-9][0-9- ]{8,}$/.test(d.tel))bad('su-tel','연락처 형식을 확인해 주세요');
+ if(d.mail&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.mail))bad('su-mail','이메일 형식을 확인해 주세요');
+ const agreed=['agree-terms','agree-privacy','agree-policy','agree-age'].every(i=>g(i).checked);if(!agreed)g('su-consent').classList.add('err');
+ const first=document.querySelector('#signup .field.err .input')||(agreed?null:g('su-consent'));
+ if(first){first.scrollIntoView({behavior:'smooth',block:'center'});if(first.focus)setTimeout(()=>first.focus({preventScroll:true}),350);toast('표시된 항목을 기재해 주세요');return}
+ let code='';try{code=await sha(d.id+':'+d.pw)}catch(e){}
+ const t=`[아이템박스 회원가입 신청]\n이름: ${d.name}\n업체명(상호): ${d.co}\n아이디: ${d.id}\n연락처: ${d.tel}\n이메일: ${d.mail}\n주소: ${d.addr}${SIGNUP_API?'':'\n가입코드: '+code}\n※ 사업자등록증 사진 첨부`;
+ if(SIGNUP_API){try{const r=await api({action:'signup',name:d.name,id:d.id,code,tel:d.tel,mail:d.mail,co:d.co,addr:d.addr});if(!r.ok){if(r.err==='dup'){bad('su-id','이미 사용 중인 아이디입니다');g('su-id').scrollIntoView({behavior:'smooth',block:'center'});return}toast('접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요');return}}catch(e){toast('접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요');return}}
+ g('su-text').textContent=t;const box=g('su-done');box.hidden=false;
+ g('su-pw').value='';g('su-pw2').value='';
+ try{navigator.clipboard.writeText(t).then(()=>toast(SIGNUP_API?'가입 신청이 접수되었습니다':'신청서를 복사했습니다 · 카카오톡에 붙여넣어 주세요')).catch(()=>{})}catch(e){}
+ box.scrollIntoView({behavior:'smooth',block:'center'})}
+document.addEventListener('input',e=>{const f=e.target.closest&&e.target.closest('#signup .field.err');if(f&&e.target.value.trim())f.classList.remove('err')});
+document.addEventListener('change',e=>{if(e.target.closest&&e.target.closest('#su-consent')&&['agree-terms','agree-privacy','agree-policy','agree-age'].every(i=>document.getElementById(i).checked))document.getElementById('su-consent').classList.remove('err')});
+let MEMBERS=[],mF='all';
+function openMembers(){if(!isAdmin){toast('관리자만 볼 수 있습니다');return}go('members');loadMembers()}
+async function loadMembers(){const note=document.getElementById('m-note');
+ if(!SIGNUP_API){note.hidden=false;note.innerHTML='<b>회원 저장소가 아직 연결되지 않았습니다</b>구글 시트 연결이 끝나면 홈페이지에서 가입한 회원이 여기에 자동으로 표시됩니다.';MEMBERS=[];renderMembers();return}
+ note.hidden=false;note.innerHTML='불러오는 중…';
+ try{const r=await api({action:'list',key:adminHash()});if(!r.ok){note.innerHTML='<b>불러오지 못했습니다</b>'+(r.err==='auth'?'관리자 인증이 맞지 않습니다. 비밀번호를 변경했다면 시트 스크립트의 ADMIN_KEY도 바꿔야 합니다.':'잠시 후 다시 시도해 주세요.');return}MEMBERS=(r.rows||[]).reverse();note.hidden=true;renderMembers()}catch(e){note.innerHTML='<b>불러오지 못했습니다</b>인터넷 연결을 확인하고 새로고침을 눌러 주세요.'}}
+function mFilter(f){mF=f;document.querySelectorAll('#m-filter .chip').forEach(b=>b.classList.toggle('on',b.dataset.f===f));renderMembers()}
+function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderMembers(){const q=(document.getElementById('m-q').value||'').trim().toLowerCase();
+ document.getElementById('ms-all').textContent=MEMBERS.length;document.getElementById('ms-wait').textContent=MEMBERS.filter(m=>m.status==='대기').length;document.getElementById('ms-ok').textContent=MEMBERS.filter(m=>m.status==='승인').length;
+ const L=MEMBERS.filter(m=>(mF==='all'||m.status===mF)&&(!q||[m.name,m.co,m.id,m.tel,m.mail].join(' ').toLowerCase().includes(q)));
+ const st=m=>m.status==='승인'?'ok':m.status==='대기'?'wait':'no';
+ const dt=a=>{const x=new Date(a);return isNaN(x)?esc(a):x.getFullYear()+'.'+String(x.getMonth()+1).padStart(2,'0')+'.'+String(x.getDate()).padStart(2,'0')+' '+String(x.getHours()).padStart(2,'0')+':'+String(x.getMinutes()).padStart(2,'0')};
+ document.getElementById('m-list').innerHTML=L.length?L.map(m=>`<div class="mrow"><div><b>${esc(m.name)}</b><br><span class="num" style="font-size:11.5px;color:var(--mute)">${dt(m.at)}</span></div><div><b style="font-size:13.5px">${esc(m.co)}</b><br>ID ${esc(m.id)}</div><div>${esc(m.tel)}<br>${esc(m.mail)}</div><div style="font-size:12.5px">${esc(m.addr)}</div><span class="st ${st(m)}">${esc(m.status||'대기')}</span><div class="acts">${m.status!=='승인'?`<button type="button" class="go" onclick="setMStatus('${esc(m.id)}','승인')">승인</button>`:''}${m.status!=='거절'?`<button type="button" onclick="setMStatus('${esc(m.id)}','거절')">${m.status==='승인'?'승인 취소':'거절'}</button>`:`<button type="button" onclick="setMStatus('${esc(m.id)}','대기')">대기로</button>`}</div></div>`).join(''):'<p class="p" style="padding:24px 0;text-align:center">표시할 회원이 없습니다</p>'}
+async function setMStatus(id,status){try{const r=await api({action:'status',key:adminHash(),id,status});if(r.ok){const m=MEMBERS.find(x=>x.id===id);if(m)m.status=status;renderMembers();toast(status==='승인'?'승인했습니다':'변경했습니다')}else toast('변경하지 못했습니다')}catch(e){toast('변경하지 못했습니다')}}
 async function doLogin(){const id=document.getElementById('lid').value.trim(),pw=document.getElementById('lpw').value;if(!id||!pw){toast('아이디와 비밀번호를 입력하세요');return}
  let h='';try{h=await sha(id+':'+pw)}catch(e){}
  if(id==='itembox_admin'&&h===adminHash()){setMember(true,true);go('home');toast('관리자로 로그인했습니다')}
- else if(h===VIEWER_HASH){setMember(true,false);go('home');toast('정회원으로 로그인했습니다')}
+ else if(h===VIEWER_HASH||MEMBER_HASHES.includes(h)){setMember(true,false);go('home');toast('정회원으로 로그인했습니다')}
+ else if(SIGNUP_API){try{const r=await api({action:'login',id,code:h});if(r.ok&&r.status==='approved'){setMember(true,false);go('home');toast((r.co||'정회원')+'님, 로그인했습니다')}else if(r.ok){toast('승인 대기 중입니다 · 사업자등록증을 카카오톡으로 보내주세요')}else toast('아이디 또는 비밀번호가 올바르지 않습니다')}catch(e){toast('로그인 중 오류가 발생했습니다')}}
  else{toast('아이디 또는 비밀번호가 올바르지 않습니다')}}
 try{const a=sessionStorage.getItem('ib_auth');if(a==='admin')setTimeout(()=>setMember(true,true),0);else if(a==='member')setTimeout(()=>setMember(true,false),0);else setMember(false)}catch(e){setMember(false)}
 
